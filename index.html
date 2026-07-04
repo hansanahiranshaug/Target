@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Target</title>
+    <title>Professional Target & Incentive Tracker</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -17,20 +17,15 @@
             --secondary: #6366f1;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
 
         body {
             background-color: #e5e7eb;
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start;
             min-height: 100vh;
-            padding: 15px; /* Added padding for mobile edges */
+            padding: 20px 15px;
         }
 
         .dashboard {
@@ -43,22 +38,23 @@
             transition: all 0.3s ease;
         }
 
-        .header {
-            text-align: center;
-            margin-bottom: 25px;
-        }
-
-        .header h1 {
-            color: var(--dark);
-            font-size: 24px;
-            font-weight: 700;
-        }
-
-        .header p {
+        .header { text-align: center; margin-bottom: 25px; }
+        .header h1 { color: var(--dark); font-size: 24px; font-weight: 700; margin-bottom: 10px;}
+        
+        select.month-dropdown {
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: 2px solid var(--primary);
             color: var(--primary);
             font-weight: 600;
-            font-size: 16px;
-            margin-top: 5px;
+            outline: none;
+            cursor: pointer;
+            width: 100%;
+            max-width: 250px;
+            text-align: center;
+            appearance: none;
+            background-color: #f8fafc;
         }
 
         .stats-grid {
@@ -76,19 +72,8 @@
             border: 1px solid #e5e7eb;
         }
 
-        .stat-card h3 {
-            font-size: 12px;
-            color: #6b7280;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .stat-card .value {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--dark);
-            margin-top: 5px;
-        }
+        .stat-card h3 { font-size: 12px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; }
+        .stat-card .value { font-size: 24px; font-weight: 700; color: var(--dark); margin-top: 5px; }
 
         .finance-card {
             background: #f8fafc;
@@ -100,16 +85,8 @@
             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
         }
 
-        .finance-card h2 {
-            font-size: 16px;
-            color: #475569;
-            margin-bottom: 10px;
-        }
-
-        .finance-amount {
-            font-size: 28px;
-            font-weight: 700;
-        }
+        .finance-card h2 { font-size: 16px; color: #475569; margin-bottom: 10px; }
+        .finance-amount { font-size: 28px; font-weight: 700; }
 
         .text-success { color: var(--success); }
         .text-danger { color: var(--danger); }
@@ -123,118 +100,95 @@
             margin-bottom: 15px;
         }
 
-        .input-section label {
-            display: block;
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--dark);
-            margin-bottom: 10px;
-        }
-
-        .input-group {
-            display: flex;
-            gap: 10px;
-        }
-
-        .btn-group {
-            display: flex;
-            gap: 10px;
-            flex: 1;
-        }
+        .input-section label { display: block; font-size: 14px; font-weight: 600; color: var(--dark); margin-bottom: 10px; }
+        .input-group { display: flex; gap: 10px; }
+        .btn-group { display: flex; gap: 10px; flex: 1; }
 
         input[type="number"] {
-            flex: 1;
-            padding: 12px 15px;
-            border: 2px solid #d1d5db;
-            border-radius: 8px;
-            font-size: 16px;
-            outline: none;
-            transition: 0.3s;
-            width: 100%;
+            flex: 1; padding: 12px 15px; border: 2px solid #d1d5db; border-radius: 8px;
+            font-size: 16px; outline: none; transition: 0.3s; width: 100%;
         }
-
-        input[type="number"]:focus {
-            border-color: var(--primary);
-        }
+        input[type="number"]:focus { border-color: var(--primary); }
 
         button {
-            padding: 12px 20px;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 15px;
-            cursor: pointer;
-            transition: 0.3s;
-            color: var(--white);
-            width: 100%;
-            flex: 1;
+            padding: 12px 15px; border: none; border-radius: 8px; font-weight: 600;
+            font-size: 14px; cursor: pointer; transition: 0.3s; color: var(--white);
+            width: 100%; flex: 1; text-align: center;
         }
 
         .btn-set { background: var(--secondary); }
         .btn-set:hover { background: #4f46e5; }
-
         .btn-add { background: var(--success); }
         .btn-add:hover { background: #059669; }
-        
         .btn-undo { background: var(--danger); }
         .btn-undo:hover { background: #b91c1c; }
+        .btn-reset-days { background: #6b7280; }
+        .btn-reset-days:hover { background: #4b5563; }
 
-        .status-message {
-            margin-top: 15px;
+        .status-message { margin-top: 15px; font-size: 14px; text-align: center; font-weight: 600; }
+
+        /* History & Mini Cards Styles */
+        .history-section {
+            margin-top: 25px;
+        }
+        .history-section h3 {
+            font-size: 15px;
+            color: var(--dark);
+            margin-bottom: 15px;
+            border-bottom: 2px solid var(--light);
+            padding-bottom: 8px;
+        }
+        .mini-cards-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 250px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+        .mini-card {
+            background: #f9fafb;
+            border-left: 4px solid var(--success);
+            padding: 12px 15px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
             font-size: 14px;
-            text-align: center;
-            font-weight: 600;
+        }
+        .mini-card .date-time { color: #6b7280; font-size: 12px; }
+        .mini-card .cases-count { font-weight: 700; color: var(--dark); font-size: 16px; }
+
+        .past-month-warning {
+            background: #fff3cd; color: #856404; padding: 10px; border-radius: 8px;
+            text-align: center; font-size: 14px; font-weight: 600; margin-bottom: 15px;
+            display: none;
         }
 
-        /* -----------------------------------------
-           Responsive Media Queries for Mobile
-           ----------------------------------------- */
+        /* Scrollbar styling for mini cards */
+        .mini-cards-grid::-webkit-scrollbar { width: 6px; }
+        .mini-cards-grid::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 8px;}
+        .mini-cards-grid::-webkit-scrollbar-thumb { background: #c1c1c1; border-radius: 8px;}
+
         @media (max-width: 500px) {
-            .dashboard {
-                padding: 20px 15px;
-            }
-
-            .header h1 {
-                font-size: 20px;
-            }
-
-            .stat-card {
-                padding: 12px;
-            }
-
-            .stat-card .value {
-                font-size: 20px;
-            }
-
-            .finance-amount {
-                font-size: 24px;
-            }
-
-            /* Stack inputs and buttons on small screens */
-            .input-group {
-                flex-direction: column;
-            }
-
-            .btn-group {
-                width: 100%;
-            }
+            .dashboard { padding: 20px 15px; }
+            .input-group { flex-direction: column; }
+            .btn-group { width: 100%; }
+            .finance-amount { font-size: 24px; }
         }
-
-        @media (max-width: 350px) {
-            /* For very small screens, make stats 1 column */
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
     </style>
 </head>
 <body>
 
     <div class="dashboard">
         <div class="header">
-            <h1>🎯 Target & Incentive</h1>
-            <p id="monthDisplay">Loading Month...</p>
+            <h1>🎯 Target & Incentive Tracker</h1>
+            <select id="monthSelector" class="month-dropdown" onchange="changeMonth()"></select>
+        </div>
+
+        <div id="pastMonthWarning" class="past-month-warning">
+            ⚠️ You are viewing a past month. Data cannot be edited.
         </div>
 
         <div class="stats-grid">
@@ -262,45 +216,126 @@
             <div class="status-message" id="statusMessage">Set working days to see details.</div>
         </div>
 
-        <!-- Section for Manual Working Days -->
-        <div class="input-section">
-            <label for="manualWorkingDays">1. Set/Update Working Days for the Month:</label>
-            <div class="input-group">
-                <input type="number" id="manualWorkingDays" placeholder="E.g. 21" min="1">
-                <button class="btn-set" onclick="updateWorkingDays()">Set Days</button>
+        <div id="controlsContainer">
+            <div class="input-section">
+                <label for="manualWorkingDays">1. Set/Update Working Days:</label>
+                <div class="input-group">
+                    <input type="number" id="manualWorkingDays" placeholder="E.g. 21" min="1">
+                    <div class="btn-group">
+                        <button class="btn-set" onclick="updateWorkingDays()">Set Days</button>
+                        <button class="btn-reset-days" onclick="undoWorkingDays()">Reset</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="input-section">
+                <label for="dailyCases">2. Update Today's Cases:</label>
+                <div class="input-group">
+                    <input type="number" id="dailyCases" placeholder="Enter cases done today..." min="1">
+                    <div class="btn-group">
+                        <button class="btn-add" onclick="addCases()">Add</button>
+                        <button class="btn-undo" onclick="undoLastCase()">Undo Last</button>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- Section for Daily Cases -->
-        <div class="input-section">
-            <label for="dailyCases">2. Update Today's Cases:</label>
-            <div class="input-group">
-                <input type="number" id="dailyCases" placeholder="Enter cases done today..." min="1">
-                <div class="btn-group">
-                    <button class="btn-add" onclick="addCases()">Add</button>
-                    <button class="btn-undo" onclick="undoLast()">Undo</button>
+        <div class="history-section">
+            <h3>📝 Daily Submissions Log</h3>
+            <div class="mini-cards-grid" id="miniCardsContainer">
                 </div>
-            </div>
         </div>
     </div>
 
     <script>
-        const today = new Date();
-        const year = today.getFullYear();
-        const month = today.getMonth(); 
-        
         const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-        document.getElementById('monthDisplay').innerText = `${monthNames[month]} ${year}`;
+        
+        // Actual current real-world date
+        const today = new Date();
+        const actualYear = today.getFullYear();
+        const actualMonth = today.getMonth(); 
+        
+        // Currently viewed date in the dashboard
+        let viewYear = actualYear;
+        let viewMonth = actualMonth;
 
-        const storageKey = `cases_pro_${year}_${month}`;
-        const lastEntryKey = `last_entry_pro_${year}_${month}`;
-        const workingDaysKey = `working_days_pro_${year}_${month}`;
+        let workingDays = 0;
+        let casesHistory = []; // Array to store daily cases
 
-        let totalCompleted = parseInt(localStorage.getItem(storageKey)) || 0;
-        let lastEntry = parseInt(localStorage.getItem(lastEntryKey)) || 0;
-        let workingDays = parseInt(localStorage.getItem(workingDaysKey)) || 0;
-        let monthlyTarget = workingDays * 30;
+        // On Page Load
+        window.onload = () => {
+            populateMonthDropdown();
+            loadMonthData();
+        };
 
+        // Populate the dropdown with available months from LocalStorage + Current Month
+        function populateMonthDropdown() {
+            const dropdown = document.getElementById('monthSelector');
+            let monthsSet = new Set();
+            
+            // Always add current month
+            monthsSet.add(`${actualYear}_${actualMonth}`);
+
+            // Scan localStorage for past data
+            for (let i = 0; i < localStorage.length; i++) {
+                let key = localStorage.key(i);
+                if (key.startsWith('working_days_pro_')) {
+                    let parts = key.split('_');
+                    monthsSet.add(`${parts[3]}_${parts[4]}`);
+                }
+            }
+
+            // Sort months descending (newest first)
+            let sortedMonths = Array.from(monthsSet).sort((a, b) => {
+                let [y1, m1] = a.split('_').map(Number);
+                let [y2, m2] = b.split('_').map(Number);
+                return (y1 !== y2) ? y2 - y1 : m2 - m1;
+            });
+
+            dropdown.innerHTML = "";
+            sortedMonths.forEach(m => {
+                let [y, mIndex] = m.split('_').map(Number);
+                let option = document.createElement('option');
+                option.value = m;
+                option.text = `${monthNames[mIndex]} ${y}`;
+                if (y === actualYear && mIndex === actualMonth) option.selected = true;
+                dropdown.appendChild(option);
+            });
+        }
+
+        // Triggered when dropdown value changes
+        function changeMonth() {
+            const selected = document.getElementById('monthSelector').value;
+            const [y, m] = selected.split('_').map(Number);
+            viewYear = y;
+            viewMonth = m;
+            loadMonthData();
+        }
+
+        // Load data for the currently selected viewMonth & viewYear
+        function loadMonthData() {
+            const workingDaysKey = `working_days_pro_${viewYear}_${viewMonth}`;
+            const historyKey = `cases_history_pro_${viewYear}_${viewMonth}`;
+
+            workingDays = parseInt(localStorage.getItem(workingDaysKey)) || 0;
+            casesHistory = JSON.parse(localStorage.getItem(historyKey)) || [];
+
+            // UI Adjustments for Past Months
+            const isPastMonth = (viewYear !== actualYear || viewMonth !== actualMonth);
+            document.getElementById('controlsContainer').style.display = isPastMonth ? 'none' : 'block';
+            document.getElementById('pastMonthWarning').style.display = isPastMonth ? 'block' : 'none';
+
+            updateUI();
+        }
+
+        // Save current data to LocalStorage
+        function saveData() {
+            if(viewYear !== actualYear || viewMonth !== actualMonth) return; // Prevent saving to past months
+            localStorage.setItem(`working_days_pro_${viewYear}_${viewMonth}`, workingDays);
+            localStorage.setItem(`cases_history_pro_${viewYear}_${viewMonth}`, JSON.stringify(casesHistory));
+        }
+
+        // Set Working Days
         function updateWorkingDays() {
             const inputField = document.getElementById('manualWorkingDays');
             const newWorkingDays = parseInt(inputField.value);
@@ -309,17 +344,70 @@
                 alert("Please enter a valid number of working days!");
                 return;
             }
-
             workingDays = newWorkingDays;
-            monthlyTarget = workingDays * 30;
-            
-            localStorage.setItem(workingDaysKey, workingDays);
-            
             inputField.value = ""; 
+            saveData();
             updateUI();
         }
 
+        // Undo Working Days (Reset to 0)
+        function undoWorkingDays() {
+            if(confirm("Are you sure you want to clear the working days?")) {
+                workingDays = 0;
+                saveData();
+                updateUI();
+            }
+        }
+
+        // Add Daily Cases
+        function addCases() {
+            if (workingDays === 0) {
+                alert("Please set your working days first!");
+                return;
+            }
+            const inputField = document.getElementById('dailyCases');
+            const dailyVal = parseInt(inputField.value);
+
+            if (!dailyVal || dailyVal <= 0) {
+                alert("Please enter a valid number of cases!");
+                return;
+            }
+
+            // Create a mini card record
+            const now = new Date();
+            const timeString = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            const dateString = `${now.getDate()} ${monthNames[now.getMonth()].substring(0,3)}`;
+
+            casesHistory.push({
+                timestamp: now.getTime(),
+                dateLabel: `${dateString}, ${timeString}`,
+                cases: dailyVal
+            });
+
+            inputField.value = ""; 
+            saveData();
+            updateUI();
+        }
+
+        // Undo Last Case Submission
+        function undoLastCase() {
+            if (casesHistory.length > 0) {
+                const lastEntry = casesHistory[casesHistory.length - 1];
+                if (confirm(`Are you sure you want to delete the last entry of ${lastEntry.cases} cases?`)) {
+                    casesHistory.pop(); // Remove last item
+                    saveData();
+                    updateUI();
+                }
+            } else {
+                alert("No recent entries found to undo!");
+            }
+        }
+
+        // Update the screen completely
         function updateUI() {
+            const monthlyTarget = workingDays * 30;
+            const totalCompleted = casesHistory.reduce((sum, item) => sum + item.cases, 0);
+
             document.getElementById('workingDaysDisplay').innerText = workingDays;
             document.getElementById('targetDisplay').innerText = monthlyTarget;
             document.getElementById('totalCompletedDisplay').innerText = totalCompleted;
@@ -327,7 +415,26 @@
             const remainingDisplay = document.getElementById('remainingDisplay');
             const financeDisplay = document.getElementById('financeDisplay');
             const statusMessage = document.getElementById('statusMessage');
+            const miniCardsContainer = document.getElementById('miniCardsContainer');
 
+            // Render Mini Cards
+            miniCardsContainer.innerHTML = "";
+            if(casesHistory.length === 0) {
+                miniCardsContainer.innerHTML = "<p style='font-size:13px; color:#9ca3af; text-align:center;'>No entries yet for this month.</p>";
+            } else {
+                // Loop backwards to show newest first
+                for(let i = casesHistory.length - 1; i >= 0; i--) {
+                    let entry = casesHistory[i];
+                    miniCardsContainer.innerHTML += `
+                        <div class="mini-card">
+                            <span class="date-time">🕒 ${entry.dateLabel}</span>
+                            <span class="cases-count">+${entry.cases} Cases</span>
+                        </div>
+                    `;
+                }
+            }
+
+            // Logic for Stats & Finances
             if (workingDays === 0) {
                 remainingDisplay.innerText = "0";
                 remainingDisplay.className = "value text-neutral";
@@ -347,7 +454,7 @@
                 const incentive = diff * 30;
                 financeDisplay.innerText = `+ Rs. ${incentive.toLocaleString()}`;
                 financeDisplay.className = "finance-amount text-success";
-                statusMessage.innerHTML = `Great job! You earned an incentive of Rs. 30 per extra case. 🚀`;
+                statusMessage.innerHTML = `Great job! Earned incentive of Rs. 30 per extra case. 🚀`;
                 statusMessage.className = "status-message text-success";
 
             } else if (diff < 0) {
@@ -358,61 +465,18 @@
                 const deduction = shortBy * 40;
                 financeDisplay.innerText = `- Rs. ${deduction.toLocaleString()}`;
                 financeDisplay.className = "finance-amount text-danger";
-                statusMessage.innerHTML = `You are short by ${shortBy} cases. Rs. 40 deducted per missed case. ⚠️`;
+                statusMessage.innerHTML = `Short by ${shortBy} cases. Rs. 40 deducted per missed case. ⚠️`;
                 statusMessage.className = "status-message text-danger";
 
             } else {
                 remainingDisplay.innerText = `0`;
                 remainingDisplay.className = "value text-neutral";
-                
                 financeDisplay.innerText = `Rs. 0`;
                 financeDisplay.className = "finance-amount text-neutral";
-                statusMessage.innerHTML = `You have exactly hit your target! No deductions, no incentives. 👍`;
+                statusMessage.innerHTML = `Exactly on target! No deductions, no incentives. 👍`;
                 statusMessage.className = "status-message text-neutral";
             }
         }
-
-        function addCases() {
-            if (workingDays === 0) {
-                alert("Please set your working days first!");
-                return;
-            }
-
-            const inputField = document.getElementById('dailyCases');
-            const dailyVal = parseInt(inputField.value);
-
-            if (!dailyVal || dailyVal <= 0) {
-                alert("Please enter a valid number of cases!");
-                return;
-            }
-
-            lastEntry = dailyVal;
-            localStorage.setItem(lastEntryKey, lastEntry);
-
-            totalCompleted += dailyVal;
-            localStorage.setItem(storageKey, totalCompleted);
-            
-            inputField.value = ""; 
-            updateUI();
-        }
-
-        function undoLast() {
-            if (lastEntry > 0) {
-                if (confirm(`Are you sure you want to undo the last entry of ${lastEntry} cases?`)) {
-                    totalCompleted -= lastEntry;
-                    localStorage.setItem(storageKey, totalCompleted);
-                    
-                    lastEntry = 0; 
-                    localStorage.setItem(lastEntryKey, 0);
-                    
-                    updateUI();
-                }
-            } else {
-                alert("No recent entry found to undo!");
-            }
-        }
-
-        updateUI();
     </script>
 </body>
 </html>
