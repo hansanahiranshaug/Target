@@ -15,75 +15,121 @@
             --light: #f3f4f6;
             --white: #ffffff;
             --secondary: #6366f1;
+            --bg-color: #e5e7eb;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
 
         body {
-            background-color: #e5e7eb;
+            background-color: var(--bg-color);
             display: flex;
             justify-content: center;
             align-items: flex-start;
             min-height: 100vh;
             padding: 20px 15px;
+            padding-bottom: 80px; 
+            overflow-x: hidden;
         }
 
+        /* --- Loading Screen (Preloader) --- */
+        #preloader {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg-color);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+        .spinner {
+            width: 50px; height: 50px;
+            border: 4px solid rgba(79, 70, 229, 0.2);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 15px;
+        }
+        .loading-text {
+            color: var(--dark); font-weight: 600; font-size: 14px; letter-spacing: 1px;
+            animation: pulse 1.5s infinite;
+        }
+
+        /* --- UI/UX Animations --- */
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        
+        @keyframes slideUpFade {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-item {
+            opacity: 0; /* Hidden by default until animation triggers */
+            animation: slideUpFade 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        
+        /* Staggered delays for a smooth flow */
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+        .delay-5 { animation-delay: 0.5s; }
+
+        /* --- Main Dashboard --- */
         .dashboard {
             background: var(--white);
             width: 100%;
             max-width: 600px;
             border-radius: 16px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.08);
             padding: 30px;
             transition: all 0.3s ease;
+            position: relative;
         }
 
         .header { text-align: center; margin-bottom: 25px; }
         .header h1 { color: var(--dark); font-size: 24px; font-weight: 700; margin-bottom: 10px;}
         
         select.month-dropdown {
-            padding: 10px;
-            font-size: 16px;
-            border-radius: 8px;
-            border: 2px solid var(--primary);
-            color: var(--primary);
-            font-weight: 600;
-            outline: none;
-            cursor: pointer;
-            width: 100%;
-            max-width: 250px;
-            text-align: center;
-            appearance: none;
-            background-color: #f8fafc;
+            padding: 10px; font-size: 16px; border-radius: 8px;
+            border: 2px solid var(--primary); color: var(--primary);
+            font-weight: 600; outline: none; cursor: pointer;
+            width: 100%; max-width: 250px; text-align: center;
+            appearance: none; background-color: #f8fafc;
+            transition: 0.3s;
         }
+        select.month-dropdown:hover { background-color: #e0e7ff; }
 
         .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            margin-bottom: 25px;
+            display: grid; grid-template-columns: repeat(2, 1fr);
+            gap: 15px; margin-bottom: 25px;
         }
 
         .stat-card {
-            background: var(--light);
-            padding: 15px;
-            border-radius: 12px;
-            text-align: center;
-            border: 1px solid #e5e7eb;
+            background: var(--light); padding: 15px; border-radius: 12px;
+            text-align: center; border: 1px solid #e5e7eb;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
+        .stat-card:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
 
         .stat-card h3 { font-size: 12px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; }
         .stat-card .value { font-size: 24px; font-weight: 700; color: var(--dark); margin-top: 5px; }
 
         .finance-card {
-            background: #f8fafc;
+            background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
             border-left: 5px solid var(--primary);
-            padding: 20px;
-            border-radius: 12px;
-            margin-bottom: 25px;
-            text-align: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            padding: 20px; border-radius: 12px; margin-bottom: 25px;
+            text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+            position: relative; overflow: hidden;
         }
+        .finance-card::after {
+            content: ''; position: absolute; top: -50%; left: -50%;
+            width: 200px; height: 200px; background: rgba(79, 70, 229, 0.03);
+            border-radius: 50%; z-index: 0;
+        }
+        .finance-card > * { position: relative; z-index: 1; }
 
         .finance-card h2 { font-size: 16px; color: #475569; margin-bottom: 10px; }
         .finance-amount { font-size: 28px; font-weight: 700; }
@@ -93,12 +139,11 @@
         .text-neutral { color: #6b7280; }
 
         .input-section {
-            background: var(--white);
-            padding: 20px;
-            border-radius: 12px;
-            border: 1px solid #e5e7eb;
-            margin-bottom: 15px;
+            background: var(--white); padding: 20px; border-radius: 12px;
+            border: 1px solid #e5e7eb; margin-bottom: 15px;
+            transition: border-color 0.3s;
         }
+        .input-section:hover { border-color: #d1d5db; }
 
         .input-section label { display: block; font-size: 14px; font-weight: 600; color: var(--dark); margin-bottom: 10px; }
         .input-group { display: flex; gap: 10px; }
@@ -108,18 +153,19 @@
             flex: 1; padding: 12px 15px; border: 2px solid #d1d5db; border-radius: 8px;
             font-size: 16px; outline: none; transition: 0.3s; width: 100%;
         }
-        input[type="number"]:focus { border-color: var(--primary); }
+        input[type="number"]:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1); }
 
         button {
             padding: 12px 15px; border: none; border-radius: 8px; font-weight: 600;
-            font-size: 14px; cursor: pointer; transition: 0.3s; color: var(--white);
+            font-size: 14px; cursor: pointer; transition: all 0.2s; color: var(--white);
             width: 100%; flex: 1; text-align: center;
         }
+        button:active { transform: scale(0.96); }
 
         .btn-set { background: var(--secondary); }
-        .btn-set:hover { background: #4f46e5; }
+        .btn-set:hover { background: #4f46e5; box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3); }
         .btn-add { background: var(--success); }
-        .btn-add:hover { background: #059669; }
+        .btn-add:hover { background: #059669; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3); }
         .btn-undo { background: var(--danger); }
         .btn-undo:hover { background: #b91c1c; }
         .btn-reset-days { background: #6b7280; }
@@ -127,61 +173,106 @@
 
         .status-message { margin-top: 15px; font-size: 14px; text-align: center; font-weight: 600; }
 
-        /* History & Mini Cards Styles */
-        .history-section {
-            margin-top: 25px;
-        }
+        /* --- History & Mini Cards --- */
+        .history-section { margin-top: 25px; }
         .history-section h3 {
-            font-size: 15px;
-            color: var(--dark);
-            margin-bottom: 15px;
-            border-bottom: 2px solid var(--light);
-            padding-bottom: 8px;
+            font-size: 15px; color: var(--dark); margin-bottom: 15px;
+            border-bottom: 2px solid var(--light); padding-bottom: 8px;
         }
         .mini-cards-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            max-height: 250px;
-            overflow-y: auto;
-            padding-right: 5px;
+            display: flex; flex-direction: column; gap: 10px;
+            max-height: 250px; overflow-y: auto; padding-right: 5px;
         }
         .mini-card {
-            background: #f9fafb;
-            border-left: 4px solid var(--success);
-            padding: 12px 15px;
-            border-radius: 8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-            font-size: 14px;
+            background: #f9fafb; border-left: 4px solid var(--success);
+            padding: 12px 15px; border-radius: 8px;
+            display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 14px;
+            transition: 0.2s;
         }
+        .mini-card:hover { background: #f3f4f6; }
         .mini-card .date-time { color: #6b7280; font-size: 12px; }
         .mini-card .cases-count { font-weight: 700; color: var(--dark); font-size: 16px; }
 
         .past-month-warning {
             background: #fff3cd; color: #856404; padding: 10px; border-radius: 8px;
             text-align: center; font-size: 14px; font-weight: 600; margin-bottom: 15px;
-            display: none;
+            display: none; animation: pulse 2s infinite;
         }
 
-        /* Scrollbar styling for mini cards */
         .mini-cards-grid::-webkit-scrollbar { width: 6px; }
         .mini-cards-grid::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 8px;}
-        .mini-cards-grid::-webkit-scrollbar-thumb { background: #c1c1c1; border-radius: 8px;}
+        .mini-cards-grid::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 8px;}
+        .mini-cards-grid::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
-        @media (max-width: 500px) {
+        /* --- Pro Level Footer --- */
+        .copyright-bar {
+            position: fixed;
+            bottom: 0; left: 0; width: 100%;
+            background: rgba(17, 24, 39, 0.85); /* Dark transparent */
+            backdrop-filter: blur(12px); /* Glassmorphism effect */
+            -webkit-backdrop-filter: blur(12px);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #d1d5db;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 40px;
+            font-size: 13px;
+            font-weight: 400;
+            z-index: 1000;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
+        }
+        
+        .footer-left span { color: var(--white); font-weight: 600; }
+        
+        .footer-right a {
+            color: var(--white);
+            text-decoration: none;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            background: linear-gradient(90deg, #818cf8, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .footer-right a::after {
+            content: ''; position: absolute; width: 100%; transform: scaleX(0);
+            height: 2px; bottom: -2px; left: 0;
+            background: linear-gradient(90deg, #818cf8, #c084fc);
+            transform-origin: bottom right; transition: transform 0.3s ease-out;
+        }
+        
+        .footer-right a:hover::after { transform: scaleX(1); transform-origin: bottom left; }
+        .footer-right a:hover { filter: drop-shadow(0 0 8px rgba(129, 140, 248, 0.5)); }
+
+        @media (max-width: 600px) {
             .dashboard { padding: 20px 15px; }
             .input-group { flex-direction: column; }
             .btn-group { width: 100%; }
             .finance-amount { font-size: 24px; }
+            
+            /* Footer mobile layout */
+            .copyright-bar {
+                flex-direction: column;
+                gap: 6px;
+                padding: 12px 15px;
+                text-align: center;
+            }
         }
     </style>
 </head>
 <body>
 
-    <div class="dashboard">
+    <!-- Loading Screen -->
+    <div id="preloader">
+        <div class="spinner"></div>
+        <div class="loading-text">Initializing Tracker...</div>
+    </div>
+
+    <div class="dashboard animate-item delay-1">
         <div class="header">
             <h1>🎯 Target & Incentive Tracker</h1>
             <select id="monthSelector" class="month-dropdown" onchange="changeMonth()"></select>
@@ -191,7 +282,7 @@
             ⚠️ You are viewing a past month. Data cannot be edited.
         </div>
 
-        <div class="stats-grid">
+        <div class="stats-grid animate-item delay-2">
             <div class="stat-card">
                 <h3>📅 Working Days</h3>
                 <div class="value" id="workingDaysDisplay">0</div>
@@ -210,13 +301,13 @@
             </div>
         </div>
 
-        <div class="finance-card">
+        <div class="finance-card animate-item delay-3">
             <h2>💰 Projected Financial Status</h2>
             <div class="finance-amount" id="financeDisplay">Rs. 0</div>
             <div class="status-message" id="statusMessage">Set working days to see details.</div>
         </div>
 
-        <div id="controlsContainer">
+        <div id="controlsContainer" class="animate-item delay-4">
             <div class="input-section">
                 <label for="manualWorkingDays">1. Set/Update Working Days:</label>
                 <div class="input-group">
@@ -240,43 +331,59 @@
             </div>
         </div>
 
-        <div class="history-section">
+        <div class="history-section animate-item delay-5">
             <h3>📝 Daily Submissions Log</h3>
             <div class="mini-cards-grid" id="miniCardsContainer">
-                </div>
+                <!-- Data will load here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Pro Copyright Bar -->
+    <div class="copyright-bar animate-item delay-5">
+        <div class="footer-left">
+            &copy; <span id="currentYear"></span> <span>Target & Incentive Tracker</span>.
+        </div>
+        <div class="footer-right">
+            Developed by <a href="https://facebook.com/hansana.hiransha" target="_blank">Hansana Hiransha</a>
         </div>
     </div>
 
     <script>
+        // --- Preloader Logic ---
+        window.addEventListener('load', function() {
+            // Fake delay of 600ms to show the cool loading animation
+            setTimeout(function() {
+                const preloader = document.getElementById('preloader');
+                preloader.style.opacity = '0';
+                preloader.style.visibility = 'hidden';
+            }, 600);
+        });
+
         const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
         
-        // Actual current real-world date
         const today = new Date();
         const actualYear = today.getFullYear();
         const actualMonth = today.getMonth(); 
         
-        // Currently viewed date in the dashboard
+        document.getElementById('currentYear').innerText = actualYear;
+        
         let viewYear = actualYear;
         let viewMonth = actualMonth;
 
         let workingDays = 0;
-        let casesHistory = []; // Array to store daily cases
+        let casesHistory = [];
 
-        // On Page Load
         window.onload = () => {
             populateMonthDropdown();
             loadMonthData();
         };
 
-        // Populate the dropdown with available months from LocalStorage + Current Month
         function populateMonthDropdown() {
             const dropdown = document.getElementById('monthSelector');
             let monthsSet = new Set();
-            
-            // Always add current month
             monthsSet.add(`${actualYear}_${actualMonth}`);
 
-            // Scan localStorage for past data
             for (let i = 0; i < localStorage.length; i++) {
                 let key = localStorage.key(i);
                 if (key.startsWith('working_days_pro_')) {
@@ -285,7 +392,6 @@
                 }
             }
 
-            // Sort months descending (newest first)
             let sortedMonths = Array.from(monthsSet).sort((a, b) => {
                 let [y1, m1] = a.split('_').map(Number);
                 let [y2, m2] = b.split('_').map(Number);
@@ -303,7 +409,6 @@
             });
         }
 
-        // Triggered when dropdown value changes
         function changeMonth() {
             const selected = document.getElementById('monthSelector').value;
             const [y, m] = selected.split('_').map(Number);
@@ -312,7 +417,6 @@
             loadMonthData();
         }
 
-        // Load data for the currently selected viewMonth & viewYear
         function loadMonthData() {
             const workingDaysKey = `working_days_pro_${viewYear}_${viewMonth}`;
             const historyKey = `cases_history_pro_${viewYear}_${viewMonth}`;
@@ -320,7 +424,6 @@
             workingDays = parseInt(localStorage.getItem(workingDaysKey)) || 0;
             casesHistory = JSON.parse(localStorage.getItem(historyKey)) || [];
 
-            // UI Adjustments for Past Months
             const isPastMonth = (viewYear !== actualYear || viewMonth !== actualMonth);
             document.getElementById('controlsContainer').style.display = isPastMonth ? 'none' : 'block';
             document.getElementById('pastMonthWarning').style.display = isPastMonth ? 'block' : 'none';
@@ -328,14 +431,12 @@
             updateUI();
         }
 
-        // Save current data to LocalStorage
         function saveData() {
-            if(viewYear !== actualYear || viewMonth !== actualMonth) return; // Prevent saving to past months
+            if(viewYear !== actualYear || viewMonth !== actualMonth) return;
             localStorage.setItem(`working_days_pro_${viewYear}_${viewMonth}`, workingDays);
             localStorage.setItem(`cases_history_pro_${viewYear}_${viewMonth}`, JSON.stringify(casesHistory));
         }
 
-        // Set Working Days
         function updateWorkingDays() {
             const inputField = document.getElementById('manualWorkingDays');
             const newWorkingDays = parseInt(inputField.value);
@@ -350,7 +451,6 @@
             updateUI();
         }
 
-        // Undo Working Days (Reset to 0)
         function undoWorkingDays() {
             if(confirm("Are you sure you want to clear the working days?")) {
                 workingDays = 0;
@@ -359,7 +459,6 @@
             }
         }
 
-        // Add Daily Cases
         function addCases() {
             if (workingDays === 0) {
                 alert("Please set your working days first!");
@@ -373,7 +472,6 @@
                 return;
             }
 
-            // Create a mini card record
             const now = new Date();
             const timeString = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
             const dateString = `${now.getDate()} ${monthNames[now.getMonth()].substring(0,3)}`;
@@ -389,12 +487,11 @@
             updateUI();
         }
 
-        // Undo Last Case Submission
         function undoLastCase() {
             if (casesHistory.length > 0) {
                 const lastEntry = casesHistory[casesHistory.length - 1];
                 if (confirm(`Are you sure you want to delete the last entry of ${lastEntry.cases} cases?`)) {
-                    casesHistory.pop(); // Remove last item
+                    casesHistory.pop(); 
                     saveData();
                     updateUI();
                 }
@@ -403,7 +500,6 @@
             }
         }
 
-        // Update the screen completely
         function updateUI() {
             const monthlyTarget = workingDays * 30;
             const totalCompleted = casesHistory.reduce((sum, item) => sum + item.cases, 0);
@@ -417,12 +513,10 @@
             const statusMessage = document.getElementById('statusMessage');
             const miniCardsContainer = document.getElementById('miniCardsContainer');
 
-            // Render Mini Cards
             miniCardsContainer.innerHTML = "";
             if(casesHistory.length === 0) {
                 miniCardsContainer.innerHTML = "<p style='font-size:13px; color:#9ca3af; text-align:center;'>No entries yet for this month.</p>";
             } else {
-                // Loop backwards to show newest first
                 for(let i = casesHistory.length - 1; i >= 0; i--) {
                     let entry = casesHistory[i];
                     miniCardsContainer.innerHTML += `
@@ -434,7 +528,6 @@
                 }
             }
 
-            // Logic for Stats & Finances
             if (workingDays === 0) {
                 remainingDisplay.innerText = "0";
                 remainingDisplay.className = "value text-neutral";
