@@ -1,414 +1,1020 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Professional Target & Incentive Tracker</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pro Target & Incentive Tracker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <style>
-        :root {
-            --primary: #4f46e5;
-            --success: #10b981;
-            --danger: #ef4444;
-            --warning: #f59e0b;
-            --dark: #1f2937;
-            --light: #f3f4f6;
-            --white: #ffffff;
-            --secondary: #6366f1;
-            --bg-color: #e5e7eb;
+        /* ── Reset & Base ── */
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --primary-light: #818cf8;
+            --primary-glow: rgba(99, 102, 241, 0.35);
+            --success: #10b981;
+            --success-dark: #059669;
+            --danger: #ef4444;
+            --danger-dark: #dc2626;
+            --warning: #f59e0b;
+            --dark: #0f172a;
+            --dark-card: #1e293b;
+            --surface: #f8fafc;
+            --border: #e2e8f0;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #94a3b8;
+            --radius: 16px;
+            --radius-sm: 10px;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+            --shadow-md: 0 10px 40px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
+            --shadow-lg: 0 25px 60px rgba(0, 0, 0, 0.12);
+            --shadow-glow: 0 0 40px rgba(99, 102, 241, 0.15);
+        }
 
         body {
-            background-color: var(--bg-color);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f1f5f9;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: flex-start;
-            min-height: 100vh;
-            padding: 20px 15px;
-            padding-bottom: 80px; 
-            overflow-x: hidden;
+            padding: 30px 20px 100px;
+            background-image: radial-gradient(ellipse at 10% 20%, rgba(99, 102, 241, 0.06) 0%, transparent 60%),
+                radial-gradient(ellipse at 90% 80%, rgba(16, 185, 129, 0.05) 0%, transparent 60%);
         }
 
-        /* --- Loading Screen (Preloader) --- */
+        /* ── Scrollbar ── */
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 20px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        /* ── Preloader ── */
         #preloader {
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--bg-color);
+            inset: 0;
+            background: #f1f5f9;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             z-index: 9999;
-            transition: opacity 0.5s ease, visibility 0.5s ease;
+            transition: opacity 0.6s ease, visibility 0.6s ease;
         }
-        .spinner {
-            width: 50px; height: 50px;
-            border: 4px solid rgba(79, 70, 229, 0.2);
-            border-top-color: var(--primary);
+        #preloader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        .loader-ring {
+            width: 56px;
+            height: 56px;
             border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-bottom: 15px;
+            border: 3px solid rgba(99, 102, 241, 0.12);
+            border-top-color: var(--primary);
+            animation: spin 0.9s cubic-bezier(0.6, 0, 0.4, 1) infinite;
+            margin-bottom: 18px;
         }
-        .loading-text {
-            color: var(--dark); font-weight: 600; font-size: 14px; letter-spacing: 1px;
-            animation: pulse 1.5s infinite;
+        .loader-text {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            letter-spacing: 0.5px;
+        }
+        .loader-text span {
+            color: var(--primary);
+            font-weight: 600;
         }
 
-        /* --- UI/UX Animations --- */
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-        
-        @keyframes slideUpFade {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
         }
 
-        .animate-item {
-            opacity: 0; /* Hidden by default until animation triggers */
-            animation: slideUpFade 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-        
-        /* Staggered delays for a smooth flow */
-        .delay-1 { animation-delay: 0.1s; }
-        .delay-2 { animation-delay: 0.2s; }
-        .delay-3 { animation-delay: 0.3s; }
-        .delay-4 { animation-delay: 0.4s; }
-        .delay-5 { animation-delay: 0.5s; }
-
-        /* --- Main Dashboard --- */
+        /* ── Dashboard ── */
         .dashboard {
-            background: var(--white);
             width: 100%;
-            max-width: 600px;
-            border-radius: 16px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.08);
-            padding: 30px;
-            transition: all 0.3s ease;
-            position: relative;
+            max-width: 640px;
+            animation: fadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+            transform: translateY(24px);
         }
 
-        .header { text-align: center; margin-bottom: 25px; }
-        .header h1 { color: var(--dark); font-size: 24px; font-weight: 700; margin-bottom: 10px;}
-        
-        select.month-dropdown {
-            padding: 10px; font-size: 16px; border-radius: 8px;
-            border: 2px solid var(--primary); color: var(--primary);
-            font-weight: 600; outline: none; cursor: pointer;
-            width: 100%; max-width: 250px; text-align: center;
-            appearance: none; background-color: #f8fafc;
-            transition: 0.3s;
+        @keyframes fadeUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
-        select.month-dropdown:hover { background-color: #e0e7ff; }
 
+        /* ── Header ── */
+        .header {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            margin-bottom: 28px;
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .header-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 20px;
+            box-shadow: 0 4px 14px var(--primary-glow);
+        }
+        .header h1 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -0.3px;
+        }
+        .header h1 span {
+            color: var(--primary);
+        }
+        .header-badge {
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            background: var(--primary);
+            color: #fff;
+            padding: 3px 10px;
+            border-radius: 100px;
+            margin-left: 4px;
+            vertical-align: middle;
+        }
+
+        .month-dropdown {
+            padding: 10px 16px 10px 18px;
+            font-size: 14px;
+            font-weight: 500;
+            border-radius: var(--radius-sm);
+            border: 1.5px solid var(--border);
+            background: #fff;
+            color: var(--text-primary);
+            outline: none;
+            cursor: pointer;
+            transition: 0.25s;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23475569' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            padding-right: 40px;
+            min-width: 150px;
+            box-shadow: var(--shadow-sm);
+        }
+        .month-dropdown:hover {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.08);
+        }
+        .month-dropdown:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.12);
+        }
+
+        /* ── Past Month Warning ── */
+        .past-month-warning {
+            background: #fef3c7;
+            color: #92400e;
+            padding: 10px 16px;
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            font-weight: 500;
+            display: none;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 22px;
+            border-left: 4px solid var(--warning);
+        }
+        .past-month-warning i {
+            font-size: 16px;
+        }
+        .past-month-warning.show {
+            display: flex;
+        }
+
+        /* ── Stats Grid ── */
         .stats-grid {
-            display: grid; grid-template-columns: repeat(2, 1fr);
-            gap: 15px; margin-bottom: 25px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 22px;
         }
 
         .stat-card {
-            background: var(--light); padding: 15px; border-radius: 12px;
-            text-align: center; border: 1px solid #e5e7eb;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background: #fff;
+            padding: 16px 12px;
+            border-radius: var(--radius-sm);
+            text-align: center;
+            border: 1px solid var(--border);
+            transition: 0.25s;
+            box-shadow: var(--shadow-sm);
         }
-        .stat-card:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--primary-light);
+        }
+        .stat-card .stat-icon {
+            font-size: 18px;
+            margin-bottom: 4px;
+            display: block;
+        }
+        .stat-card h3 {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+        .stat-card .value {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-top: 2px;
+            line-height: 1.3;
+        }
+        .stat-card .value.green {
+            color: var(--success);
+        }
+        .stat-card .value.red {
+            color: var(--danger);
+        }
+        .stat-card .value.muted {
+            color: var(--text-muted);
+        }
 
-        .stat-card h3 { font-size: 12px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; }
-        .stat-card .value { font-size: 24px; font-weight: 700; color: var(--dark); margin-top: 5px; }
-
+        /* ── Finance Card ── */
         .finance-card {
-            background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
-            border-left: 5px solid var(--primary);
-            padding: 20px; border-radius: 12px; margin-bottom: 25px;
-            text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.04);
-            position: relative; overflow: hidden;
+            background: linear-gradient(145deg, #ffffff, #f8fafc);
+            border-radius: var(--radius);
+            padding: 22px 26px;
+            margin-bottom: 24px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+            position: relative;
+            overflow: hidden;
+            transition: 0.3s;
         }
-        .finance-card::after {
-            content: ''; position: absolute; top: -50%; left: -50%;
-            width: 200px; height: 200px; background: rgba(79, 70, 229, 0.03);
-            border-radius: 50%; z-index: 0;
+        .finance-card:hover {
+            box-shadow: var(--shadow-md);
         }
-        .finance-card > * { position: relative; z-index: 1; }
-
-        .finance-card h2 { font-size: 16px; color: #475569; margin-bottom: 10px; }
-        .finance-amount { font-size: 28px; font-weight: 700; }
-
-        .text-success { color: var(--success); }
-        .text-danger { color: var(--danger); }
-        .text-neutral { color: #6b7280; }
-
-        .input-section {
-            background: var(--white); padding: 20px; border-radius: 12px;
-            border: 1px solid #e5e7eb; margin-bottom: 15px;
-            transition: border-color 0.3s;
+        .finance-card::before {
+            content: '';
+            position: absolute;
+            top: -60%;
+            right: -20%;
+            width: 260px;
+            height: 260px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.06), transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
         }
-        .input-section:hover { border-color: #d1d5db; }
-
-        .input-section label { display: block; font-size: 14px; font-weight: 600; color: var(--dark); margin-bottom: 10px; }
-        .input-group { display: flex; gap: 10px; }
-        .btn-group { display: flex; gap: 10px; flex: 1; }
-
-        input[type="number"] {
-            flex: 1; padding: 12px 15px; border: 2px solid #d1d5db; border-radius: 8px;
-            font-size: 16px; outline: none; transition: 0.3s; width: 100%;
-        }
-        input[type="number"]:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1); }
-
-        button {
-            padding: 12px 15px; border: none; border-radius: 8px; font-weight: 600;
-            font-size: 14px; cursor: pointer; transition: all 0.2s; color: var(--white);
-            width: 100%; flex: 1; text-align: center;
-        }
-        button:active { transform: scale(0.96); }
-
-        .btn-set { background: var(--secondary); }
-        .btn-set:hover { background: #4f46e5; box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3); }
-        .btn-add { background: var(--success); }
-        .btn-add:hover { background: #059669; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3); }
-        .btn-undo { background: var(--danger); }
-        .btn-undo:hover { background: #b91c1c; }
-        .btn-reset-days { background: #6b7280; }
-        .btn-reset-days:hover { background: #4b5563; }
-
-        .status-message { margin-top: 15px; font-size: 14px; text-align: center; font-weight: 600; }
-
-        /* --- History & Mini Cards --- */
-        .history-section { margin-top: 25px; }
-        .history-section h3 {
-            font-size: 15px; color: var(--dark); margin-bottom: 15px;
-            border-bottom: 2px solid var(--light); padding-bottom: 8px;
-        }
-        .mini-cards-grid {
-            display: flex; flex-direction: column; gap: 10px;
-            max-height: 250px; overflow-y: auto; padding-right: 5px;
-        }
-        .mini-card {
-            background: #f9fafb; border-left: 4px solid var(--success);
-            padding: 12px 15px; border-radius: 8px;
-            display: flex; justify-content: space-between; align-items: center;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 14px;
-            transition: 0.2s;
-        }
-        .mini-card:hover { background: #f3f4f6; }
-        .mini-card .date-time { color: #6b7280; font-size: 12px; }
-        .mini-card .cases-count { font-weight: 700; color: var(--dark); font-size: 16px; }
-
-        .past-month-warning {
-            background: #fff3cd; color: #856404; padding: 10px; border-radius: 8px;
-            text-align: center; font-size: 14px; font-weight: 600; margin-bottom: 15px;
-            display: none; animation: pulse 2s infinite;
-        }
-
-        .mini-cards-grid::-webkit-scrollbar { width: 6px; }
-        .mini-cards-grid::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 8px;}
-        .mini-cards-grid::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 8px;}
-        .mini-cards-grid::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-
-        /* --- Pro Level Footer --- */
-        .copyright-bar {
-            position: fixed;
-            bottom: 0; left: 0; width: 100%;
-            background: rgba(17, 24, 39, 0.85); /* Dark transparent */
-            backdrop-filter: blur(12px); /* Glassmorphism effect */
-            -webkit-backdrop-filter: blur(12px);
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            color: #d1d5db;
+        .finance-card .finance-top {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px 40px;
+            position: relative;
+            z-index: 1;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .finance-card h2 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .finance-card h2 i {
+            color: var(--primary);
+        }
+        .finance-amount {
+            font-size: 30px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            color: var(--text-primary);
+            transition: 0.3s;
+        }
+        .finance-amount.positive {
+            color: var(--success);
+        }
+        .finance-amount.negative {
+            color: var(--danger);
+        }
+        .finance-amount.neutral {
+            color: var(--text-muted);
+        }
+        .status-message {
+            font-size: 13px;
+            font-weight: 500;
+            margin-top: 8px;
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .status-message i {
+            font-size: 16px;
+        }
+        .status-message.success {
+            color: var(--success-dark);
+        }
+        .status-message.danger {
+            color: var(--danger-dark);
+        }
+        .status-message.neutral {
+            color: var(--text-muted);
+        }
+
+        /* ── Controls ── */
+        #controlsContainer {
+            display: block;
+        }
+        #controlsContainer.hidden {
+            display: none;
+        }
+
+        .input-section {
+            background: #fff;
+            padding: 18px 20px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+            margin-bottom: 14px;
+            transition: 0.25s;
+            box-shadow: var(--shadow-sm);
+        }
+        .input-section:hover {
+            border-color: #cbd5e1;
+        }
+        .input-section:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.08);
+        }
+
+        .input-section label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+        }
+        .input-section label i {
+            color: var(--primary);
+            margin-right: 6px;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .input-group input[type="number"] {
+            flex: 1;
+            min-width: 120px;
+            padding: 11px 16px;
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            font-weight: 500;
+            outline: none;
+            transition: 0.25s;
+            background: var(--surface);
+            color: var(--text-primary);
+        }
+        .input-group input[type="number"]:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.08);
+            background: #fff;
+        }
+        .input-group input[type="number"]::placeholder {
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 11px 18px;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            color: #fff;
+            flex: 1;
+            min-width: 80px;
+            letter-spacing: 0.2px;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn:active {
+            transform: scale(0.96);
+        }
+        .btn i {
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            box-shadow: 0 4px 14px rgba(99, 102, 241, 0.25);
+        }
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.35);
+            transform: translateY(-1px);
+        }
+
+        .btn-success {
+            background: var(--success);
+            box-shadow: 0 4px 14px rgba(16, 185, 129, 0.25);
+        }
+        .btn-success:hover {
+            background: var(--success-dark);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.35);
+            transform: translateY(-1px);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            box-shadow: 0 4px 14px rgba(239, 68, 68, 0.2);
+        }
+        .btn-danger:hover {
+            background: var(--danger-dark);
+            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .btn-neutral {
+            background: #94a3b8;
+            box-shadow: 0 4px 14px rgba(148, 163, 184, 0.2);
+        }
+        .btn-neutral:hover {
+            background: #64748b;
+            box-shadow: 0 6px 20px rgba(148, 163, 184, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1.5px solid var(--border);
+            box-shadow: none;
+        }
+        .btn-outline:hover {
+            background: var(--surface);
+            border-color: #94a3b8;
+            transform: translateY(-1px);
+        }
+
+        /* ── History ── */
+        .history-section {
+            margin-top: 24px;
+        }
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+        .history-header h3 {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .history-header h3 i {
+            color: var(--primary);
+        }
+        .history-header .count-badge {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+            background: var(--surface);
+            padding: 2px 12px;
+            border-radius: 100px;
+            border: 1px solid var(--border);
+        }
+
+        .mini-cards-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 260px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .mini-card {
+            background: #fff;
+            border-left: 4px solid var(--success);
+            padding: 13px 18px;
+            border-radius: var(--radius-sm);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow-sm);
+            transition: 0.2s;
+            border: 1px solid var(--border);
+            border-left-width: 4px;
+        }
+        .mini-card:hover {
+            background: var(--surface);
+            box-shadow: var(--shadow-md);
+            transform: translateX(3px);
+        }
+        .mini-card .date-time {
+            color: var(--text-secondary);
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .mini-card .date-time i {
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+        .mini-card .cases-count {
+            font-weight: 700;
+            color: var(--text-primary);
+            font-size: 15px;
+            background: var(--surface);
+            padding: 2px 14px;
+            border-radius: 100px;
+            border: 1px solid var(--border);
+        }
+        .mini-card .cases-count.positive {
+            color: var(--success);
+            border-color: rgba(16, 185, 129, 0.2);
+            background: rgba(16, 185, 129, 0.06);
+        }
+
+        .empty-history {
+            text-align: center;
+            padding: 30px 10px;
+            color: var(--text-muted);
+            font-size: 14px;
+            background: var(--surface);
+            border-radius: var(--radius-sm);
+            border: 1.5px dashed var(--border);
+        }
+        .empty-history i {
+            font-size: 28px;
+            display: block;
+            margin-bottom: 10px;
+            opacity: 0.5;
+        }
+
+        /* ── Footer ── */
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(15, 23, 42, 0.88);
+            backdrop-filter: blur(16px) saturate(1.2);
+            -webkit-backdrop-filter: blur(16px) saturate(1.2);
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 14px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            z-index: 1000;
+            box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.12);
+        }
+
+        .footer-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: rgba(255, 255, 255, 0.6);
             font-size: 13px;
             font-weight: 400;
-            z-index: 1000;
-            box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
         }
-        
-        .footer-left span { color: var(--white); font-weight: 600; }
-        
-        .footer-right a {
-            color: var(--white);
-            text-decoration: none;
+        .footer-brand .brand-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 14px;
+        }
+        .footer-brand strong {
+            color: #fff;
             font-weight: 600;
-            letter-spacing: 0.5px;
-            background: linear-gradient(90deg, #818cf8, #c084fc);
+        }
+        .footer-brand .divider {
+            width: 1px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.08);
+        }
+        .footer-brand .year {
+            opacity: 0.5;
+            font-size: 12px;
+        }
+
+        .footer-social {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .footer-social a {
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 16px;
+            transition: 0.25s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.04);
+            text-decoration: none;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+        .footer-social a:hover {
+            color: #fff;
+            background: rgba(99, 102, 241, 0.2);
+            border-color: rgba(99, 102, 241, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(99, 102, 241, 0.15);
+        }
+        .footer-social a .fa-facebook:hover {
+            color: #1877f2;
+        }
+        .footer-social a .fa-github:hover {
+            color: #fff;
+        }
+        .footer-social a .fa-linkedin-in:hover {
+            color: #0a66c2;
+        }
+        .footer-social a .fa-twitter:hover {
+            color: #1da1f2;
+        }
+
+        .footer-credit {
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .footer-credit a {
+            color: rgba(255, 255, 255, 0.5);
+            text-decoration: none;
+            font-weight: 500;
+            transition: 0.2s;
+            background: linear-gradient(90deg, #818cf8, #a78bfa);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            transition: all 0.3s ease;
-            position: relative;
+            background-clip: text;
+        }
+        .footer-credit a:hover {
+            opacity: 1;
+            filter: drop-shadow(0 0 12px rgba(129, 140, 248, 0.3));
+        }
+        .footer-credit .dot {
+            color: rgba(255, 255, 255, 0.08);
         }
 
-        .footer-right a::after {
-            content: ''; position: absolute; width: 100%; transform: scaleX(0);
-            height: 2px; bottom: -2px; left: 0;
-            background: linear-gradient(90deg, #818cf8, #c084fc);
-            transform-origin: bottom right; transition: transform 0.3s ease-out;
-        }
-        
-        .footer-right a:hover::after { transform: scaleX(1); transform-origin: bottom left; }
-        .footer-right a:hover { filter: drop-shadow(0 0 8px rgba(129, 140, 248, 0.5)); }
-
-        @media (max-width: 600px) {
-            .dashboard { padding: 20px 15px; }
-            .input-group { flex-direction: column; }
-            .btn-group { width: 100%; }
-            .finance-amount { font-size: 24px; }
-            
-            /* Footer mobile layout */
-            .copyright-bar {
+        /* ── Responsive ── */
+        @media (max-width: 640px) {
+            body {
+                padding: 16px 12px 120px;
+            }
+            .header {
                 flex-direction: column;
-                gap: 6px;
-                padding: 12px 15px;
+                align-items: stretch;
+            }
+            .header-left {
+                justify-content: center;
+            }
+            .header h1 {
+                font-size: 17px;
                 text-align: center;
+            }
+            .month-dropdown {
+                width: 100%;
+                min-width: unset;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+            .stat-card {
+                padding: 14px 10px;
+            }
+            .stat-card .value {
+                font-size: 19px;
+            }
+
+            .finance-card {
+                padding: 18px 18px;
+            }
+            .finance-amount {
+                font-size: 24px;
+            }
+
+            .input-group {
+                flex-direction: column;
+            }
+            .input-group input[type="number"] {
+                min-width: unset;
+            }
+            .btn-group {
+                width: 100%;
+            }
+            .btn {
+                flex: 1;
+                min-width: 60px;
+                padding: 10px 14px;
+                font-size: 12px;
+            }
+
+            .footer {
+                padding: 12px 16px;
+                flex-direction: column;
+                align-items: center;
+                gap: 8px;
+            }
+            .footer-brand {
+                font-size: 12px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .footer-brand .divider {
+                display: none;
+            }
+            .footer-social {
+                gap: 10px;
+            }
+            .footer-social a {
+                width: 30px;
+                height: 30px;
+                font-size: 14px;
+            }
+            .footer-credit {
+                font-size: 11px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+            }
+            .stat-card .value {
+                font-size: 17px;
+            }
+            .finance-amount {
+                font-size: 20px;
             }
         }
     </style>
 </head>
 <body>
 
-    <!-- Loading Screen -->
+    <!-- ═══ Preloader ═══ -->
     <div id="preloader">
-        <div class="spinner"></div>
-        <div class="loading-text">Initializing Tracker...</div>
+        <div class="loader-ring"></div>
+        <div class="loader-text">Loading <span>Tracker</span> …</div>
     </div>
 
-    <div class="dashboard animate-item delay-1">
+    <!-- ═══ Dashboard ═══ -->
+    <div class="dashboard">
+
+        <!-- Header -->
         <div class="header">
-            <h1>🎯 Target & Incentive Tracker</h1>
+            <div class="header-left">
+                <div class="header-icon"><i class="fas fa-bullseye"></i></div>
+                <h1>Target<span>Pro</span><span class="header-badge">v2.0</span></h1>
+            </div>
             <select id="monthSelector" class="month-dropdown" onchange="changeMonth()"></select>
         </div>
 
+        <!-- Past Month Warning -->
         <div id="pastMonthWarning" class="past-month-warning">
-            ⚠️ You are viewing a past month. Data cannot be edited.
+            <i class="fas fa-clock"></i>
+            <span>You are viewing a past month — data cannot be edited.</span>
         </div>
 
-        <div class="stats-grid animate-item delay-2">
+        <!-- Stats -->
+        <div class="stats-grid">
             <div class="stat-card">
-                <h3>📅 Working Days</h3>
+                <span class="stat-icon">📅</span>
+                <h3>Working Days</h3>
                 <div class="value" id="workingDaysDisplay">0</div>
             </div>
             <div class="stat-card">
-                <h3>🎯 Monthly Target</h3>
+                <span class="stat-icon">🎯</span>
+                <h3>Monthly Target</h3>
                 <div class="value" id="targetDisplay">0</div>
             </div>
             <div class="stat-card">
-                <h3>✅ Completed Cases</h3>
+                <span class="stat-icon">✅</span>
+                <h3>Completed</h3>
                 <div class="value" id="totalCompletedDisplay">0</div>
             </div>
             <div class="stat-card">
-                <h3>⚖️ Status (Cases)</h3>
+                <span class="stat-icon">⚖️</span>
+                <h3>Status</h3>
                 <div class="value" id="remainingDisplay">0</div>
             </div>
         </div>
 
-        <div class="finance-card animate-item delay-3">
-            <h2>💰 Projected Financial Status</h2>
-            <div class="finance-amount" id="financeDisplay">Rs. 0</div>
-            <div class="status-message" id="statusMessage">Set working days to see details.</div>
+        <!-- Finance Card -->
+        <div class="finance-card">
+            <div class="finance-top">
+                <h2><i class="fas fa-coins"></i> Projected Financial Status</h2>
+                <div class="finance-amount" id="financeDisplay">Rs. 0</div>
+            </div>
+            <div class="status-message" id="statusMessage">
+                <i class="fas fa-info-circle"></i>
+                Set working days to see details.
+            </div>
         </div>
 
-        <div id="controlsContainer" class="animate-item delay-4">
+        <!-- Controls -->
+        <div id="controlsContainer">
             <div class="input-section">
-                <label for="manualWorkingDays">1. Set/Update Working Days:</label>
+                <label><i class="fas fa-calendar-alt"></i> Set / Update Working Days</label>
                 <div class="input-group">
-                    <input type="number" id="manualWorkingDays" placeholder="E.g. 21" min="1">
+                    <input type="number" id="manualWorkingDays" placeholder="E.g. 21" min="1" />
                     <div class="btn-group">
-                        <button class="btn-set" onclick="updateWorkingDays()">Set Days</button>
-                        <button class="btn-reset-days" onclick="undoWorkingDays()">Reset</button>
+                        <button class="btn btn-primary" onclick="updateWorkingDays()">
+                            <i class="fas fa-check"></i> Set Days
+                        </button>
+                        <button class="btn btn-neutral" onclick="undoWorkingDays()">
+                            <i class="fas fa-undo-alt"></i> Reset
+                        </button>
                     </div>
                 </div>
             </div>
 
             <div class="input-section">
-                <label for="dailyCases">2. Update Today's Cases:</label>
+                <label><i class="fas fa-plus-circle"></i> Update Today's Cases</label>
                 <div class="input-group">
-                    <input type="number" id="dailyCases" placeholder="Enter cases done today..." min="1">
+                    <input type="number" id="dailyCases" placeholder="Enter cases done today…" min="1" />
                     <div class="btn-group">
-                        <button class="btn-add" onclick="addCases()">Add</button>
-                        <button class="btn-undo" onclick="undoLastCase()">Undo Last</button>
+                        <button class="btn btn-success" onclick="addCases()">
+                            <i class="fas fa-plus"></i> Add
+                        </button>
+                        <button class="btn btn-danger" onclick="undoLastCase()">
+                            <i class="fas fa-undo"></i> Undo Last
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="history-section animate-item delay-5">
-            <h3>📝 Daily Submissions Log</h3>
+        <!-- History -->
+        <div class="history-section">
+            <div class="history-header">
+                <h3><i class="fas fa-list-ul"></i> Daily Submission Log</h3>
+                <span class="count-badge" id="historyCount">0 entries</span>
+            </div>
             <div class="mini-cards-grid" id="miniCardsContainer">
-                <!-- Data will load here -->
+                <!-- Rendered by JS -->
             </div>
         </div>
     </div>
 
-    <!-- Pro Copyright Bar -->
-    <div class="copyright-bar animate-item delay-5">
-        <div class="footer-left">
-            &copy; <span id="currentYear"></span> <span>Target & Incentive Tracker</span>.
+    <!-- ═══ Footer ═══ -->
+    <footer class="footer">
+        <div class="footer-brand">
+            <div class="brand-icon"><i class="fas fa-bullseye"></i></div>
+            <strong>TargetPro</strong>
+            <span class="divider"></span>
+            <span>&copy; <span id="currentYear"></span></span>
+            <span class="year">· v2.0</span>
         </div>
-        <div class="footer-right">
-            Developed by <a href="https://facebook.com/hansana.hiransha" target="_blank">Hansana Hiransha</a>
-        </div>
-    </div>
 
+        <div class="footer-social">
+            <a href="https://facebook.com/hansana.hiransha" target="_blank" aria-label="Facebook">
+                <i class="fab fa-facebook"></i>
+            </a>
+            <a href="#" target="_blank" aria-label="GitHub">
+                <i class="fab fa-github"></i>
+            </a>
+            <a href="#" target="_blank" aria-label="LinkedIn">
+                <i class="fab fa-linkedin-in"></i>
+            </a>
+            <a href="#" target="_blank" aria-label="Twitter">
+                <i class="fab fa-twitter"></i>
+            </a>
+        </div>
+
+        <div class="footer-credit">
+            Developed with <span style="color: #ef4444; -webkit-text-fill-color: #ef4444;">❤</span>
+            by <a href="https://facebook.com/hansana.hiransha" target="_blank">Hansana Hiransha</a>
+        </div>
+    </footer>
+
+    <!-- ═══ Script ═══ -->
     <script>
-        // --- Preloader Logic ---
+        // ── Preloader ──
         window.addEventListener('load', function() {
-            // Fake delay of 600ms to show the cool loading animation
             setTimeout(function() {
-                const preloader = document.getElementById('preloader');
-                preloader.style.opacity = '0';
-                preloader.style.visibility = 'hidden';
-            }, 600);
+                document.getElementById('preloader').classList.add('hidden');
+            }, 700);
         });
 
-        const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-        
+        // ── Constants ──
+        const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September",
+            "October", "November", "December"
+        ];
         const today = new Date();
         const actualYear = today.getFullYear();
-        const actualMonth = today.getMonth(); 
-        
+        const actualMonth = today.getMonth();
+
         document.getElementById('currentYear').innerText = actualYear;
-        
+
         let viewYear = actualYear;
         let viewMonth = actualMonth;
-
         let workingDays = 0;
         let casesHistory = [];
 
-        window.onload = () => {
-            populateMonthDropdown();
-            loadMonthData();
-        };
-
+        // ── Populate Dropdown ──
         function populateMonthDropdown() {
             const dropdown = document.getElementById('monthSelector');
-            let monthsSet = new Set();
+            const monthsSet = new Set();
             monthsSet.add(`${actualYear}_${actualMonth}`);
 
             for (let i = 0; i < localStorage.length; i++) {
-                let key = localStorage.key(i);
-                if (key.startsWith('working_days_pro_')) {
-                    let parts = key.split('_');
+                const key = localStorage.key(i);
+                if (key && key.startsWith('working_days_pro_')) {
+                    const parts = key.split('_');
                     monthsSet.add(`${parts[3]}_${parts[4]}`);
                 }
             }
 
-            let sortedMonths = Array.from(monthsSet).sort((a, b) => {
-                let [y1, m1] = a.split('_').map(Number);
-                let [y2, m2] = b.split('_').map(Number);
+            const sorted = Array.from(monthsSet).sort((a, b) => {
+                const [y1, m1] = a.split('_').map(Number);
+                const [y2, m2] = b.split('_').map(Number);
                 return (y1 !== y2) ? y2 - y1 : m2 - m1;
             });
 
-            dropdown.innerHTML = "";
-            sortedMonths.forEach(m => {
-                let [y, mIndex] = m.split('_').map(Number);
-                let option = document.createElement('option');
-                option.value = m;
-                option.text = `${monthNames[mIndex]} ${y}`;
-                if (y === actualYear && mIndex === actualMonth) option.selected = true;
-                dropdown.appendChild(option);
+            dropdown.innerHTML = '';
+            sorted.forEach(m => {
+                const [y, mIdx] = m.split('_').map(Number);
+                const opt = document.createElement('option');
+                opt.value = m;
+                opt.text = `${monthNames[mIdx]} ${y}`;
+                if (y === actualYear && mIdx === actualMonth) opt.selected = true;
+                dropdown.appendChild(opt);
             });
         }
 
+        // ── Month Change ──
         function changeMonth() {
             const selected = document.getElementById('monthSelector').value;
             const [y, m] = selected.split('_').map(Number);
@@ -417,89 +1023,100 @@
             loadMonthData();
         }
 
+        // ── Load Data ──
         function loadMonthData() {
-            const workingDaysKey = `working_days_pro_${viewYear}_${viewMonth}`;
-            const historyKey = `cases_history_pro_${viewYear}_${viewMonth}`;
+            const wKey = `working_days_pro_${viewYear}_${viewMonth}`;
+            const hKey = `cases_history_pro_${viewYear}_${viewMonth}`;
 
-            workingDays = parseInt(localStorage.getItem(workingDaysKey)) || 0;
-            casesHistory = JSON.parse(localStorage.getItem(historyKey)) || [];
+            workingDays = parseInt(localStorage.getItem(wKey)) || 0;
+            casesHistory = JSON.parse(localStorage.getItem(hKey)) || [];
 
-            const isPastMonth = (viewYear !== actualYear || viewMonth !== actualMonth);
-            document.getElementById('controlsContainer').style.display = isPastMonth ? 'none' : 'block';
-            document.getElementById('pastMonthWarning').style.display = isPastMonth ? 'block' : 'none';
+            const isPast = (viewYear !== actualYear || viewMonth !== actualMonth);
+            const controls = document.getElementById('controlsContainer');
+            const warning = document.getElementById('pastMonthWarning');
+
+            if (isPast) {
+                controls.classList.add('hidden');
+                warning.classList.add('show');
+            } else {
+                controls.classList.remove('hidden');
+                warning.classList.remove('show');
+            }
 
             updateUI();
         }
 
+        // ── Save ──
         function saveData() {
-            if(viewYear !== actualYear || viewMonth !== actualMonth) return;
+            if (viewYear !== actualYear || viewMonth !== actualMonth) return;
             localStorage.setItem(`working_days_pro_${viewYear}_${viewMonth}`, workingDays);
             localStorage.setItem(`cases_history_pro_${viewYear}_${viewMonth}`, JSON.stringify(casesHistory));
         }
 
+        // ── Update Working Days ──
         function updateWorkingDays() {
-            const inputField = document.getElementById('manualWorkingDays');
-            const newWorkingDays = parseInt(inputField.value);
-
-            if (!newWorkingDays || newWorkingDays <= 0) {
-                alert("Please enter a valid number of working days!");
+            const input = document.getElementById('manualWorkingDays');
+            const val = parseInt(input.value);
+            if (!val || val <= 0) {
+                alert('Please enter a valid number of working days.');
                 return;
             }
-            workingDays = newWorkingDays;
-            inputField.value = ""; 
+            workingDays = val;
+            input.value = '';
             saveData();
             updateUI();
         }
 
         function undoWorkingDays() {
-            if(confirm("Are you sure you want to clear the working days?")) {
+            if (confirm('Are you sure you want to clear working days?')) {
                 workingDays = 0;
                 saveData();
                 updateUI();
             }
         }
 
+        // ── Add Cases ──
         function addCases() {
             if (workingDays === 0) {
-                alert("Please set your working days first!");
+                alert('Please set your working days first.');
                 return;
             }
-            const inputField = document.getElementById('dailyCases');
-            const dailyVal = parseInt(inputField.value);
-
-            if (!dailyVal || dailyVal <= 0) {
-                alert("Please enter a valid number of cases!");
+            const input = document.getElementById('dailyCases');
+            const val = parseInt(input.value);
+            if (!val || val <= 0) {
+                alert('Please enter a valid number of cases.');
                 return;
             }
 
             const now = new Date();
-            const timeString = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-            const dateString = `${now.getDate()} ${monthNames[now.getMonth()].substring(0,3)}`;
+            const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const dateStr = `${now.getDate()} ${monthNames[now.getMonth()].substring(0,3)}`;
 
             casesHistory.push({
                 timestamp: now.getTime(),
-                dateLabel: `${dateString}, ${timeString}`,
-                cases: dailyVal
+                dateLabel: `${dateStr}, ${timeStr}`,
+                cases: val
             });
 
-            inputField.value = ""; 
+            input.value = '';
             saveData();
             updateUI();
         }
 
         function undoLastCase() {
-            if (casesHistory.length > 0) {
-                const lastEntry = casesHistory[casesHistory.length - 1];
-                if (confirm(`Are you sure you want to delete the last entry of ${lastEntry.cases} cases?`)) {
-                    casesHistory.pop(); 
-                    saveData();
-                    updateUI();
-                }
-            } else {
-                alert("No recent entries found to undo!");
+            if (casesHistory.length === 0) {
+                alert('No entries to undo.');
+                return;
+            }
+            const last = casesHistory[casesHistory.length - 1];
+            if (confirm(`Delete the last entry of ${last.cases} cases?`)) {
+                casesHistory.pop();
+                saveData();
+                updateUI();
             }
         }
 
+        // ── Update UI ──
         function updateUI() {
             const monthlyTarget = workingDays * 30;
             const totalCompleted = casesHistory.reduce((sum, item) => sum + item.cases, 0);
@@ -508,68 +1125,81 @@
             document.getElementById('targetDisplay').innerText = monthlyTarget;
             document.getElementById('totalCompletedDisplay').innerText = totalCompleted;
 
-            const remainingDisplay = document.getElementById('remainingDisplay');
-            const financeDisplay = document.getElementById('financeDisplay');
-            const statusMessage = document.getElementById('statusMessage');
-            const miniCardsContainer = document.getElementById('miniCardsContainer');
+            const remainingEl = document.getElementById('remainingDisplay');
+            const financeEl = document.getElementById('financeDisplay');
+            const statusEl = document.getElementById('statusMessage');
+            const historyContainer = document.getElementById('miniCardsContainer');
+            const historyCount = document.getElementById('historyCount');
 
-            miniCardsContainer.innerHTML = "";
-            if(casesHistory.length === 0) {
-                miniCardsContainer.innerHTML = "<p style='font-size:13px; color:#9ca3af; text-align:center;'>No entries yet for this month.</p>";
+            historyCount.innerText = `${casesHistory.length} entries`;
+
+            // ── History ──
+            if (casesHistory.length === 0) {
+                historyContainer.innerHTML = `
+                    <div class="empty-history">
+                        <i class="fas fa-inbox"></i>
+                        No entries yet for this month.
+                    </div>
+                `;
             } else {
-                for(let i = casesHistory.length - 1; i >= 0; i--) {
-                    let entry = casesHistory[i];
-                    miniCardsContainer.innerHTML += `
+                let html = '';
+                for (let i = casesHistory.length - 1; i >= 0; i--) {
+                    const entry = casesHistory[i];
+                    html += `
                         <div class="mini-card">
-                            <span class="date-time">🕒 ${entry.dateLabel}</span>
-                            <span class="cases-count">+${entry.cases} Cases</span>
+                            <span class="date-time">
+                                <i class="far fa-clock"></i> ${entry.dateLabel}
+                            </span>
+                            <span class="cases-count positive">+${entry.cases}</span>
                         </div>
                     `;
                 }
+                historyContainer.innerHTML = html;
             }
 
+            // ── Finance & Status ──
             if (workingDays === 0) {
-                remainingDisplay.innerText = "0";
-                remainingDisplay.className = "value text-neutral";
-                financeDisplay.innerText = "Rs. 0";
-                financeDisplay.className = "finance-amount text-neutral";
-                statusMessage.innerHTML = "Please set your working days to see your status.";
-                statusMessage.className = "status-message text-neutral";
+                remainingEl.innerText = '0';
+                remainingEl.className = 'value muted';
+                financeEl.innerText = 'Rs. 0';
+                financeEl.className = 'finance-amount neutral';
+                statusEl.innerHTML = `<i class="fas fa-info-circle"></i> Please set your working days to see your status.`;
+                statusEl.className = 'status-message neutral';
                 return;
             }
 
             const diff = totalCompleted - monthlyTarget;
 
             if (diff > 0) {
-                remainingDisplay.innerText = `+${diff}`;
-                remainingDisplay.className = "value text-success";
-                
+                remainingEl.innerText = `+${diff}`;
+                remainingEl.className = 'value green';
                 const incentive = diff * 30;
-                financeDisplay.innerText = `+ Rs. ${incentive.toLocaleString()}`;
-                financeDisplay.className = "finance-amount text-success";
-                statusMessage.innerHTML = `Great job! Earned incentive of Rs. 30 per extra case. 🚀`;
-                statusMessage.className = "status-message text-success";
-
+                financeEl.innerText = `+ Rs. ${incentive.toLocaleString()}`;
+                financeEl.className = 'finance-amount positive';
+                statusEl.innerHTML = `<i class="fas fa-rocket"></i> Great job! Earned Rs. 30 per extra case. 🚀`;
+                statusEl.className = 'status-message success';
             } else if (diff < 0) {
-                const shortBy = Math.abs(diff);
-                remainingDisplay.innerText = `-${shortBy}`;
-                remainingDisplay.className = "value text-danger";
-                
-                const deduction = shortBy * 40;
-                financeDisplay.innerText = `- Rs. ${deduction.toLocaleString()}`;
-                financeDisplay.className = "finance-amount text-danger";
-                statusMessage.innerHTML = `Short by ${shortBy} cases. Rs. 40 deducted per missed case. ⚠️`;
-                statusMessage.className = "status-message text-danger";
-
+                const short = Math.abs(diff);
+                remainingEl.innerText = `-${short}`;
+                remainingEl.className = 'value red';
+                const deduction = short * 40;
+                financeEl.innerText = `- Rs. ${deduction.toLocaleString()}`;
+                financeEl.className = 'finance-amount negative';
+                statusEl.innerHTML = `<i class="fas fa-exclamation-triangle"></i> Short by ${short} cases. Rs. 40 deducted per missed case.`;
+                statusEl.className = 'status-message danger';
             } else {
-                remainingDisplay.innerText = `0`;
-                remainingDisplay.className = "value text-neutral";
-                financeDisplay.innerText = `Rs. 0`;
-                financeDisplay.className = "finance-amount text-neutral";
-                statusMessage.innerHTML = `Exactly on target! No deductions, no incentives. 👍`;
-                statusMessage.className = "status-message text-neutral";
+                remainingEl.innerText = '0';
+                remainingEl.className = 'value muted';
+                financeEl.innerText = 'Rs. 0';
+                financeEl.className = 'finance-amount neutral';
+                statusEl.innerHTML = `<i class="fas fa-check-circle"></i> Exactly on target! No deductions, no incentives. 👍`;
+                statusEl.className = 'status-message neutral';
             }
         }
+
+        // ── Init ──
+        populateMonthDropdown();
+        loadMonthData();
     </script>
 </body>
 </html>
