@@ -16,7 +16,7 @@
             box-sizing: border-box;
         }
 
-        /* ── Light Theme (default) ── */
+        /* ── Light Theme ── */
         :root {
             --primary: #6366f1;
             --primary-dark: #4f46e5;
@@ -29,17 +29,16 @@
             --warning: #f59e0b;
 
             --bg-body: #f1f5f9;
-            --bg-card: #ffffff;
-            --bg-surface: #f8fafc;
-            --bg-input: #f8fafc;
-            --border-color: #e2e8f0;
+            --bg-card: rgba(255, 255, 255, 0.75);
+            --bg-surface: rgba(248, 250, 252, 0.7);
+            --bg-input: rgba(248, 250, 252, 0.7);
+            --border-color: rgba(226, 232, 240, 0.6);
             --text-primary: #0f172a;
             --text-secondary: #475569;
             --text-muted: #94a3b8;
             --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
             --shadow-md: 0 10px 40px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
             --shadow-lg: 0 25px 60px rgba(0, 0, 0, 0.12);
-            --shadow-glow: 0 0 40px rgba(99, 102, 241, 0.15);
 
             --radius: 16px;
             --radius-sm: 10px;
@@ -53,53 +52,93 @@
             --warning-text: #92400e;
             --warning-border: #f59e0b;
 
+            --glass-bg: rgba(255, 255, 255, 0.65);
+            --glass-border: rgba(255, 255, 255, 0.2);
+
             --transition: 0.35s ease;
+
+            /* Gradient background colors */
+            --gradient-1: #e0e7ff;
+            --gradient-2: #fce7f3;
+            --gradient-3: #d1fae5;
         }
 
         /* ── Dark Theme ── */
         [data-theme="dark"] {
             --bg-body: #0f172a;
-            --bg-card: #1e293b;
-            --bg-surface: #2d3a4f;
-            --bg-input: #2d3a4f;
-            --border-color: #334155;
+            --bg-card: rgba(30, 41, 59, 0.8);
+            --bg-surface: rgba(45, 58, 79, 0.7);
+            --bg-input: rgba(45, 58, 79, 0.7);
+            --border-color: rgba(51, 65, 85, 0.6);
             --text-primary: #f1f5f9;
             --text-secondary: #cbd5e1;
             --text-muted: #94a3b8;
             --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2);
             --shadow-md: 0 10px 40px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.3);
             --shadow-lg: 0 25px 60px rgba(0, 0, 0, 0.6);
-            --shadow-glow: 0 0 40px rgba(99, 102, 241, 0.2);
 
             --footer-bg: rgba(15, 23, 42, 0.95);
             --footer-border: rgba(255, 255, 255, 0.05);
-            --footer-text: rgba(255, 255, 255, 0.3);
-            --footer-link: rgba(255, 255, 255, 0.5);
 
             --warning-bg: #422c1a;
             --warning-text: #fcd34d;
             --warning-border: #f59e0b;
 
-            background-image: radial-gradient(ellipse at 10% 20%, rgba(99, 102, 241, 0.08) 0%, transparent 60%),
-                radial-gradient(ellipse at 90% 80%, rgba(16, 185, 129, 0.04) 0%, transparent 60%);
+            --glass-bg: rgba(30, 41, 59, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.05);
+
+            --gradient-1: #1e1b4b;
+            --gradient-2: #2d1b3d;
+            --gradient-3: #1a2e2a;
         }
 
+        /* ── Animated Gradient Background ── */
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--bg-body);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: flex-start;
             padding: 30px 20px 100px;
-            background-image: radial-gradient(ellipse at 10% 20%, rgba(99, 102, 241, 0.06) 0%, transparent 60%),
-                radial-gradient(ellipse at 90% 80%, rgba(16, 185, 129, 0.05) 0%, transparent 60%);
             transition: background var(--transition), color var(--transition);
+            position: relative;
+            overflow-x: hidden;
         }
 
-        [data-theme="dark"] body {
-            background-image: radial-gradient(ellipse at 10% 20%, rgba(99, 102, 241, 0.08) 0%, transparent 60%),
-                radial-gradient(ellipse at 90% 80%, rgba(16, 185, 129, 0.04) 0%, transparent 60%);
+        .bg-gradient {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background: linear-gradient(135deg, var(--gradient-1), var(--gradient-2), var(--gradient-3));
+            background-size: 400% 400%;
+            animation: gradientShift 18s ease-in-out infinite alternate;
+            transition: background 0.8s ease;
+        }
+        @keyframes gradientShift {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        /* subtle grid overlay */
+        .bg-grid-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.06) 1px, transparent 0);
+            background-size: 40px 40px;
+            mask-image: radial-gradient(ellipse at center, black 30%, transparent 70%);
+            -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 70%);
+        }
+        [data-theme="dark"] .bg-grid-overlay {
+            background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.03) 1px, transparent 0);
         }
 
         /* ── Scrollbar ── */
@@ -110,17 +149,17 @@
             background: transparent;
         }
         ::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
+            background: rgba(203, 213, 225, 0.5);
             border-radius: 20px;
         }
         ::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
+            background: rgba(148, 163, 184, 0.6);
         }
         [data-theme="dark"] ::-webkit-scrollbar-thumb {
-            background: #475569;
+            background: rgba(71, 85, 105, 0.5);
         }
         [data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
-            background: #64748b;
+            background: rgba(100, 116, 139, 0.6);
         }
 
         /* ── Preloader ── */
@@ -169,6 +208,8 @@
         .dashboard {
             width: 100%;
             max-width: 640px;
+            position: relative;
+            z-index: 1;
             animation: fadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
             opacity: 0;
             transform: translateY(24px);
@@ -179,6 +220,25 @@
                 opacity: 1;
                 transform: translateY(0);
             }
+        }
+
+        /* ── Glassmorphism Base ── */
+        .stat-card,
+        .finance-card,
+        .input-section,
+        .mini-card {
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--shadow-sm), 0 0 0 1px rgba(255, 255, 255, 0.05);
+            transition: all var(--transition);
+        }
+        [data-theme="dark"] .stat-card,
+        [data-theme="dark"] .finance-card,
+        [data-theme="dark"] .input-section,
+        [data-theme="dark"] .mini-card {
+            box-shadow: var(--shadow-sm), 0 0 0 1px rgba(0, 0, 0, 0.2);
         }
 
         /* ── Header ── */
@@ -237,13 +297,12 @@
             flex-wrap: wrap;
         }
 
-        /* ── Dark Mode Toggle ── */
         .theme-toggle {
             width: 42px;
             height: 42px;
             border-radius: 50%;
             border: 1.5px solid var(--border-color);
-            background: var(--bg-card);
+            background: var(--glass-bg);
             color: var(--text-secondary);
             font-size: 18px;
             cursor: pointer;
@@ -253,6 +312,7 @@
             transition: all 0.3s ease;
             box-shadow: var(--shadow-sm);
             flex-shrink: 0;
+            backdrop-filter: blur(8px);
         }
         .theme-toggle:hover {
             border-color: var(--primary);
@@ -277,7 +337,6 @@
         }
         [data-theme="dark"] .theme-toggle {
             border-color: var(--border-color);
-            background: var(--bg-card);
             color: #fbbf24;
         }
         [data-theme="dark"] .theme-toggle:hover {
@@ -292,7 +351,7 @@
             font-weight: 500;
             border-radius: var(--radius-sm);
             border: 1.5px solid var(--border-color);
-            background: var(--bg-card);
+            background: var(--glass-bg);
             color: var(--text-primary);
             outline: none;
             cursor: pointer;
@@ -304,6 +363,7 @@
             padding-right: 40px;
             min-width: 150px;
             box-shadow: var(--shadow-sm);
+            backdrop-filter: blur(8px);
         }
         [data-theme="dark"] .month-dropdown {
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2394a3b8' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
@@ -331,6 +391,7 @@
             margin-bottom: 22px;
             border-left: 4px solid var(--warning-border);
             transition: background var(--transition), color var(--transition);
+            backdrop-filter: blur(8px);
         }
         .past-month-warning i {
             font-size: 16px;
@@ -348,16 +409,17 @@
         }
 
         .stat-card {
-            background: var(--bg-card);
             padding: 16px 12px;
             border-radius: var(--radius-sm);
             text-align: center;
-            border: 1px solid var(--border-color);
             transition: all 0.25s;
-            box-shadow: var(--shadow-sm);
+            transform-style: preserve-3d;
+            perspective: 600px;
+            cursor: default;
+            position: relative;
         }
         .stat-card:hover {
-            transform: translateY(-3px);
+            transform: translateY(-3px) scale(1.02);
             box-shadow: var(--shadow-md);
             border-color: var(--primary-light);
         }
@@ -380,6 +442,7 @@
             margin-top: 2px;
             line-height: 1.3;
             transition: color var(--transition);
+            font-variant-numeric: tabular-nums;
         }
         .stat-card .value.green {
             color: var(--success);
@@ -391,17 +454,17 @@
             color: var(--text-muted);
         }
 
-        /* ── Finance Card ── */
+        /* ── Finance Card & Progress ── */
         .finance-card {
-            background: linear-gradient(145deg, var(--bg-card), var(--bg-surface));
             border-radius: var(--radius);
             padding: 22px 26px;
             margin-bottom: 24px;
-            border: 1px solid var(--border-color);
-            box-shadow: var(--shadow-sm);
             position: relative;
             overflow: hidden;
             transition: all var(--transition);
+            transform-style: preserve-3d;
+            perspective: 600px;
+            cursor: default;
         }
         .finance-card:hover {
             box-shadow: var(--shadow-md);
@@ -413,9 +476,13 @@
             right: -20%;
             width: 260px;
             height: 260px;
-            background: radial-gradient(circle, rgba(99, 102, 241, 0.06), transparent 70%);
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.08), transparent 70%);
             border-radius: 50%;
             pointer-events: none;
+            transition: all 0.5s ease;
+        }
+        .finance-card:hover::before {
+            transform: scale(1.2);
         }
         .finance-card .finance-top {
             display: flex;
@@ -444,6 +511,7 @@
             letter-spacing: -0.5px;
             color: var(--text-primary);
             transition: color var(--transition);
+            font-variant-numeric: tabular-nums;
         }
         .finance-amount.positive {
             color: var(--success);
@@ -478,6 +546,99 @@
             color: var(--text-muted);
         }
 
+        /* ── Progress Bar ── */
+        .progress-wrapper {
+            margin-top: 14px;
+            position: relative;
+            z-index: 1;
+        }
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 5px;
+        }
+        .progress-info span:last-child {
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        .progress-track {
+            width: 100%;
+            height: 8px;
+            background: var(--border-color);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+            position: relative;
+        }
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            border-radius: 20px;
+            background: linear-gradient(90deg, var(--primary), var(--primary-light));
+            transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+        }
+        .progress-fill.complete {
+            background: linear-gradient(90deg, var(--success), #34d399);
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+        }
+        .progress-fill.over {
+            background: linear-gradient(90deg, var(--success), #34d399);
+            box-shadow: 0 0 30px rgba(16, 185, 129, 0.5);
+            animation: pulseGlow 1.5s ease-in-out infinite;
+        }
+        @keyframes pulseGlow {
+            0%,
+            100% {
+                box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+            }
+            50% {
+                box-shadow: 0 0 40px rgba(16, 185, 129, 0.6);
+            }
+        }
+
+        /* ── Sparkle particles on progress bar when over-target ── */
+        .sparkle-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            border-radius: 20px;
+        }
+        .sparkle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #fff;
+            border-radius: 50%;
+            animation: sparkleFloat 2s ease-in-out infinite;
+            opacity: 0;
+        }
+        @keyframes sparkleFloat {
+            0% {
+                transform: translateY(0) scale(0);
+                opacity: 0;
+            }
+            30% {
+                opacity: 1;
+                transform: translateY(-10px) scale(1);
+            }
+            70% {
+                opacity: 1;
+                transform: translateY(-20px) scale(0.8);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-30px) scale(0);
+            }
+        }
+
         /* ── Controls ── */
         #controlsContainer {
             display: block;
@@ -487,13 +648,12 @@
         }
 
         .input-section {
-            background: var(--bg-card);
             padding: 18px 20px;
             border-radius: var(--radius-sm);
-            border: 1px solid var(--border-color);
             margin-bottom: 14px;
             transition: all 0.25s;
-            box-shadow: var(--shadow-sm);
+            position: relative;
+            overflow: hidden;
         }
         .input-section:hover {
             border-color: #cbd5e1;
@@ -518,6 +678,12 @@
             color: var(--primary);
             margin-right: 6px;
         }
+        .input-section .hint {
+            font-size: 11px;
+            font-weight: 400;
+            color: var(--text-muted);
+            margin-left: 6px;
+        }
 
         .input-group {
             display: flex;
@@ -536,6 +702,7 @@
             transition: all 0.25s;
             background: var(--bg-input);
             color: var(--text-primary);
+            backdrop-filter: blur(8px);
         }
         .input-group input[type="number"]:focus {
             border-color: var(--primary);
@@ -571,12 +738,30 @@
             letter-spacing: 0.2px;
             position: relative;
             overflow: hidden;
+            backdrop-filter: blur(4px);
         }
         .btn:active {
             transform: scale(0.96);
         }
         .btn i {
             font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        /* ── Ripple Effect ── */
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.4);
+            transform: scale(0);
+            animation: rippleAnim 0.6s ease-out forwards;
+            pointer-events: none;
+        }
+        @keyframes rippleAnim {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
         }
 
         .btn-primary {
@@ -598,6 +783,19 @@
             box-shadow: 0 6px 20px rgba(16, 185, 129, 0.35);
             transform: translateY(-1px);
         }
+        .btn-success.success-flash {
+            background: var(--success-dark) !important;
+            animation: successPulse 0.6s ease;
+        }
+        @keyframes successPulse {
+            0%,
+            100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(0.95);
+            }
+        }
 
         .btn-danger {
             background: var(--danger);
@@ -616,18 +814,6 @@
         .btn-neutral:hover {
             background: #64748b;
             box-shadow: 0 6px 20px rgba(148, 163, 184, 0.3);
-            transform: translateY(-1px);
-        }
-
-        .btn-outline {
-            background: transparent;
-            color: var(--text-secondary);
-            border: 1.5px solid var(--border-color);
-            box-shadow: none;
-        }
-        .btn-outline:hover {
-            background: var(--bg-surface);
-            border-color: #94a3b8;
             transform: translateY(-1px);
         }
 
@@ -662,6 +848,7 @@
             border-radius: 100px;
             border: 1px solid var(--border-color);
             transition: all var(--transition);
+            backdrop-filter: blur(4px);
         }
 
         .mini-cards-grid {
@@ -674,23 +861,48 @@
         }
 
         .mini-card {
-            background: var(--bg-card);
             border-left: 4px solid var(--success);
             padding: 13px 18px;
             border-radius: var(--radius-sm);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: var(--shadow-sm);
-            transition: all 0.2s;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
             border: 1px solid var(--border-color);
             border-left-width: 4px;
+            opacity: 0;
+            transform: translateY(-20px) scale(0.95);
+            animation: cardSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
         }
         .mini-card:hover {
-            background: var(--bg-surface);
-            box-shadow: var(--shadow-md);
             transform: translateX(3px);
+            box-shadow: var(--shadow-md);
         }
+        .mini-card.removing {
+            animation: cardSlideOut 0.3s ease forwards !important;
+        }
+
+        @keyframes cardSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        @keyframes cardSlideOut {
+            from {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+            to {
+                opacity: 0;
+                transform: translateY(-20px) scale(0.9);
+            }
+        }
+
         .mini-card .date-time {
             color: var(--text-secondary);
             font-size: 13px;
@@ -728,12 +940,92 @@
             border-radius: var(--radius-sm);
             border: 1.5px dashed var(--border-color);
             transition: all var(--transition);
+            backdrop-filter: blur(4px);
         }
         .empty-history i {
             font-size: 28px;
             display: block;
             margin-bottom: 10px;
             opacity: 0.5;
+        }
+
+        /* ── Toast ── */
+        #toast-container {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            z-index: 9998;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 360px;
+            width: 100%;
+            pointer-events: none;
+        }
+        .toast {
+            padding: 14px 20px;
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            font-weight: 500;
+            color: #fff;
+            box-shadow: var(--shadow-lg);
+            backdrop-filter: blur(12px);
+            animation: slideInToast 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            pointer-events: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .toast.hide {
+            animation: slideOutToast 0.3s ease forwards;
+        }
+        .toast i {
+            font-size: 18px;
+        }
+        .toast.success {
+            background: rgba(16, 185, 129, 0.9);
+        }
+        .toast.error {
+            background: rgba(239, 68, 68, 0.9);
+        }
+        .toast.info {
+            background: rgba(99, 102, 241, 0.9);
+        }
+        .toast.warning {
+            background: rgba(245, 158, 11, 0.9);
+        }
+
+        @keyframes slideInToast {
+            from {
+                opacity: 0;
+                transform: translateX(60px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0) scale(1);
+            }
+        }
+        @keyframes slideOutToast {
+            from {
+                opacity: 1;
+                transform: translateX(0) scale(1);
+            }
+            to {
+                opacity: 0;
+                transform: translateX(60px) scale(0.9);
+            }
+        }
+
+        /* ── Confetti Canvas ── */
+        #confetti-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9997;
         }
 
         /* ── Footer ── */
@@ -901,6 +1193,12 @@
             .footer-credit {
                 font-size: 12px;
             }
+            #toast-container {
+                bottom: 100px;
+                right: 10px;
+                left: 10px;
+                max-width: unset;
+            }
         }
 
         @media (max-width: 400px) {
@@ -919,6 +1217,16 @@
 </head>
 <body>
 
+    <!-- ═══ Animated Gradient Background ═══ -->
+    <div class="bg-gradient"></div>
+    <div class="bg-grid-overlay"></div>
+
+    <!-- ═══ Confetti Canvas ═══ -->
+    <canvas id="confetti-canvas"></canvas>
+
+    <!-- ═══ Toast Container ═══ -->
+    <div id="toast-container"></div>
+
     <!-- ═══ Preloader ═══ -->
     <div id="preloader">
         <div class="loader-ring"></div>
@@ -928,10 +1236,14 @@
     <!-- ═══ Dashboard ═══ -->
     <div class="dashboard">
 
-        <!-- Header with Dark Mode Toggle -->
+        <!-- Header -->
         <div class="header">
-                <select id="monthSelector" class="month-dropdown" onchange="changeMonth()"></select>
+            <div class="header-left">
+                <div class="header-icon"><i class="fas fa-bullseye"></i></div>
+                <h1>Target<span>Pro</span><span class="header-badge">v2.0</span></h1>
+            </div>
             <div class="header-right">
+                <select id="monthSelector" class="month-dropdown" onchange="changeMonth()"></select>
                 <button class="theme-toggle" id="themeToggle" aria-label="Toggle Dark Mode" title="Toggle Dark Mode">
                     <i class="fas fa-moon"></i>
                     <i class="fas fa-sun"></i>
@@ -945,32 +1257,32 @@
             <span>You are viewing a past month — data cannot be edited.</span>
         </div>
 
-        <!-- Stats -->
-        <div class="stats-grid">
-            <div class="stat-card">
+        <!-- Stats (with 3D tilt) -->
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card" data-tilt>
                 <span class="stat-icon">📅</span>
                 <h3>Working Days</h3>
                 <div class="value" id="workingDaysDisplay">0</div>
             </div>
-            <div class="stat-card">
+            <div class="stat-card" data-tilt>
                 <span class="stat-icon">🎯</span>
                 <h3>Monthly Target</h3>
                 <div class="value" id="targetDisplay">0</div>
             </div>
-            <div class="stat-card">
+            <div class="stat-card" data-tilt>
                 <span class="stat-icon">✅</span>
                 <h3>Completed</h3>
                 <div class="value" id="totalCompletedDisplay">0</div>
             </div>
-            <div class="stat-card">
+            <div class="stat-card" data-tilt>
                 <span class="stat-icon">⚖️</span>
                 <h3>Status</h3>
                 <div class="value" id="remainingDisplay">0</div>
             </div>
         </div>
 
-        <!-- Finance Card -->
-        <div class="finance-card">
+        <!-- Finance Card + Progress (with 3D tilt) -->
+        <div class="finance-card" data-tilt>
             <div class="finance-top">
                 <h2><i class="fas fa-coins"></i> Projected Financial Status</h2>
                 <div class="finance-amount" id="financeDisplay">Rs. 0</div>
@@ -978,6 +1290,19 @@
             <div class="status-message" id="statusMessage">
                 <i class="fas fa-info-circle"></i>
                 Set working days to see details.
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="progress-wrapper">
+                <div class="progress-info">
+                    <span>📊 Target Progress</span>
+                    <span id="progressLabel">0%</span>
+                </div>
+                <div class="progress-track">
+                    <div class="progress-fill" id="progressFill" style="width: 0%;">
+                        <div class="sparkle-container" id="sparkleContainer"></div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -988,10 +1313,10 @@
                 <div class="input-group">
                     <input type="number" id="manualWorkingDays" placeholder="E.g. 21" min="1" />
                     <div class="btn-group">
-                        <button class="btn btn-primary" onclick="updateWorkingDays()">
+                        <button class="btn btn-primary" onclick="updateWorkingDays(event)">
                             <i class="fas fa-check"></i> Set Days
                         </button>
-                        <button class="btn btn-neutral" onclick="undoWorkingDays()">
+                        <button class="btn btn-neutral" onclick="undoWorkingDays(event)">
                             <i class="fas fa-undo-alt"></i> Reset
                         </button>
                     </div>
@@ -999,14 +1324,14 @@
             </div>
 
             <div class="input-section">
-                <label><i class="fas fa-plus-circle"></i> Update Today's Cases</label>
+                <label><i class="fas fa-plus-circle"></i> Update Today's Cases <span class="hint">(Press Enter to add)</span></label>
                 <div class="input-group">
-                    <input type="number" id="dailyCases" placeholder="Enter cases done today…" min="1" />
+                    <input type="number" id="dailyCases" placeholder="Enter cases done today…" min="1" autofocus />
                     <div class="btn-group">
-                        <button class="btn btn-success" onclick="addCases()">
-                            <i class="fas fa-plus"></i> Add
+                        <button class="btn btn-success" id="addBtn" onclick="addCases(event)">
+                            <i class="fas fa-plus" id="addIcon"></i> Add
                         </button>
-                        <button class="btn btn-danger" onclick="undoLastCase()">
+                        <button class="btn btn-danger" onclick="undoLastCase(event)">
                             <i class="fas fa-undo"></i> Undo Last
                         </button>
                     </div>
@@ -1052,6 +1377,9 @@
         window.addEventListener('load', function() {
             setTimeout(function() {
                 document.getElementById('preloader').classList.add('hidden');
+                document.getElementById('dailyCases').focus();
+                initTilt();
+                initConfettiCanvas();
             }, 700);
         });
 
@@ -1070,6 +1398,208 @@
             localStorage.setItem('theme_preference', next);
         });
 
+        // ── Toast System ──
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            let icon = 'fa-info-circle';
+            if (type === 'success') icon = 'fa-check-circle';
+            else if (type === 'error') icon = 'fa-exclamation-circle';
+            else if (type === 'warning') icon = 'fa-exclamation-triangle';
+            toast.innerHTML = `<i class="fas ${icon}"></i> ${message}`;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.classList.add('hide');
+                setTimeout(() => toast.remove(), 300);
+            }, 2800);
+        }
+
+        // ── Ripple Effect ──
+        function createRipple(e, btn) {
+            const rect = btn.getBoundingClientRect();
+            const ripple = document.createElement('span');
+            ripple.className = 'ripple';
+            const size = Math.max(rect.width, rect.height);
+            const x = (e.clientX || e.pageX || 0) - rect.left - size / 2;
+            const y = (e.clientY || e.pageY || 0) - rect.top - size / 2;
+            ripple.style.width = ripple.style.height = size + 'px';
+            ripple.style.left = x + 'px';
+            ripple.style.top = y + 'px';
+            btn.appendChild(ripple);
+            setTimeout(() => ripple.remove(), 600);
+        }
+
+        // ── Keyboard Shortcuts ──
+        document.addEventListener('keydown', function(e) {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'z') {
+                e.preventDefault();
+                undoLastCase(e);
+            }
+        });
+
+        document.getElementById('dailyCases').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                addCases(e);
+            }
+        });
+
+        // ── Animated Number Counter ──
+        function animateNumber(element, target, duration = 800) {
+            const start = parseInt(element.innerText.replace(/[^0-9-+]/g, '')) || 0;
+            const diff = target - start;
+            if (diff === 0) return;
+            const startTime = performance.now();
+
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const ease = 1 - Math.pow(1 - progress, 3);
+                const current = start + diff * ease;
+                element.innerText = Math.round(current);
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                } else {
+                    element.innerText = target;
+                }
+            }
+            requestAnimationFrame(update);
+        }
+
+        // ── Confetti System ──
+        let confettiCanvas, confettiCtx, confettiPieces = [];
+        let confettiRunning = false;
+
+        function initConfettiCanvas() {
+            confettiCanvas = document.getElementById('confetti-canvas');
+            confettiCtx = confettiCanvas.getContext('2d');
+            resizeConfettiCanvas();
+            window.addEventListener('resize', resizeConfettiCanvas);
+        }
+
+        function resizeConfettiCanvas() {
+            if (confettiCanvas) {
+                confettiCanvas.width = window.innerWidth;
+                confettiCanvas.height = window.innerHeight;
+            }
+        }
+
+        class ConfettiPiece {
+            constructor() {
+                this.x = Math.random() * confettiCanvas.width;
+                this.y = -20;
+                this.w = Math.random() * 10 + 5;
+                this.h = Math.random() * 6 + 3;
+                this.color = ['#6366f1', '#818cf8', '#10b981', '#34d399', '#f59e0b', '#ef4444', '#ec4899', '#8b5cf6'][Math
+                .floor(Math.random() * 8)];
+                this.rotation = Math.random() * 360;
+                this.vx = (Math.random() - 0.5) * 6;
+                this.vy = Math.random() * 4 + 3;
+                this.rotSpeed = (Math.random() - 0.5) * 10;
+                this.opacity = 1;
+                this.friction = 0.99;
+                this.gravity = 0.12;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.vy += this.gravity;
+                this.vx *= this.friction;
+                this.rotation += this.rotSpeed;
+                if (this.y > confettiCanvas.height + 50) {
+                    this.opacity = 0;
+                }
+            }
+
+            draw(ctx) {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate((this.rotation * Math.PI) / 180);
+                ctx.globalAlpha = this.opacity;
+                ctx.fillStyle = this.color;
+                ctx.shadowBlur = 8;
+                ctx.shadowColor = this.color + '40';
+                ctx.fillRect(-this.w / 2, -this.h / 2, this.w, this.h);
+                ctx.restore();
+            }
+        }
+
+        function fireConfetti(count = 120) {
+            if (confettiRunning) return;
+            confettiRunning = true;
+            confettiPieces = [];
+            for (let i = 0; i < count; i++) {
+                confettiPieces.push(new ConfettiPiece());
+            }
+            let frameId;
+
+            function animateConfetti() {
+                confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+                let alive = false;
+                confettiPieces.forEach(p => {
+                    p.update();
+                    if (p.opacity > 0) {
+                        p.draw(confettiCtx);
+                        alive = true;
+                    }
+                });
+                if (alive) {
+                    frameId = requestAnimationFrame(animateConfetti);
+                } else {
+                    confettiRunning = false;
+                    confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+                }
+            }
+            animateConfetti();
+            // Auto-stop after 5 seconds
+            setTimeout(() => {
+                if (frameId) cancelAnimationFrame(frameId);
+                confettiRunning = false;
+                confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+            }, 5000);
+        }
+
+        let confettiTriggered = false;
+
+        function checkConfettiTrigger(totalCompleted, monthlyTarget) {
+            if (totalCompleted > monthlyTarget && !confettiTriggered && monthlyTarget > 0) {
+                confettiTriggered = true;
+                fireConfetti(150);
+                showToast('🎉 Target exceeded! Celebration time! 🎊', 'success');
+                // Reset trigger after 10 seconds so it can fire again if they go way over
+                setTimeout(() => { confettiTriggered = false; }, 10000);
+            }
+            // If they drop back below target (unlikely), reset trigger
+            if (totalCompleted <= monthlyTarget) {
+                confettiTriggered = false;
+            }
+        }
+
+        // ── 3D Tilt Effect ──
+        function initTilt() {
+            const cards = document.querySelectorAll('[data-tilt]');
+            cards.forEach(card => {
+                card.addEventListener('mousemove', function(e) {
+                    const rect = this.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    const rotateX = ((y - centerY) / centerY) * -8;
+                    const rotateY = ((x - centerX) / centerX) * 8;
+                    this.style.transform =
+                        `perspective(600px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-3px)`;
+                    this.style.transition = 'none';
+                });
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'perspective(600px) rotateX(0) rotateY(0) translateY(0)';
+                    this.style.transition = 'transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)';
+                });
+            });
+        }
+
         // ── Constants ──
         const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September",
             "October", "November", "December"
@@ -1077,11 +1607,14 @@
         const today = new Date();
         const actualYear = today.getFullYear();
         const actualMonth = today.getMonth();
+        const currentDay = today.getDate();
 
         let viewYear = actualYear;
         let viewMonth = actualMonth;
         let workingDays = 0;
         let casesHistory = [];
+        let prevTotalCompleted = 0;
+        let prevMonthlyTarget = 0;
 
         // ── Populate Dropdown ──
         function populateMonthDropdown() {
@@ -1089,7 +1622,6 @@
             if (!dropdown) return;
             const monthsSet = new Set();
             monthsSet.add(`${actualYear}_${actualMonth}`);
-
             for (let i = 0; i < localStorage.length; i++) {
                 const key = localStorage.key(i);
                 if (key && key.startsWith('working_days_pro_')) {
@@ -1099,13 +1631,11 @@
                     }
                 }
             }
-
             const sorted = Array.from(monthsSet).sort((a, b) => {
                 const [y1, m1] = a.split('_').map(Number);
                 const [y2, m2] = b.split('_').map(Number);
                 return (y1 !== y2) ? y2 - y1 : m2 - m1;
             });
-
             dropdown.innerHTML = '';
             sorted.forEach(m => {
                 const [y, mIdx] = m.split('_').map(Number);
@@ -1117,7 +1647,6 @@
             });
         }
 
-        // ── Month Change ──
         function changeMonth() {
             const dropdown = document.getElementById('monthSelector');
             if (!dropdown) return;
@@ -1128,19 +1657,15 @@
             loadMonthData();
         }
 
-        // ── Load Data ──
         function loadMonthData() {
             const wKey = `working_days_pro_${viewYear}_${viewMonth}`;
             const hKey = `cases_history_pro_${viewYear}_${viewMonth}`;
-
             workingDays = parseInt(localStorage.getItem(wKey)) || 0;
             const stored = localStorage.getItem(hKey);
             casesHistory = stored ? JSON.parse(stored) : [];
-
             const isPast = (viewYear !== actualYear || viewMonth !== actualMonth);
             const controls = document.getElementById('controlsContainer');
             const warning = document.getElementById('pastMonthWarning');
-
             if (isPast) {
                 controls.classList.add('hidden');
                 warning.classList.add('show');
@@ -1148,49 +1673,63 @@
                 controls.classList.remove('hidden');
                 warning.classList.remove('show');
             }
-
+            prevTotalCompleted = 0;
+            prevMonthlyTarget = 0;
+            confettiTriggered = false;
             updateUI();
         }
 
-        // ── Save ──
         function saveData() {
             if (viewYear !== actualYear || viewMonth !== actualMonth) return;
             localStorage.setItem(`working_days_pro_${viewYear}_${viewMonth}`, workingDays);
             localStorage.setItem(`cases_history_pro_${viewYear}_${viewMonth}`, JSON.stringify(casesHistory));
         }
 
+        function getDaysPassed() {
+            if (viewYear !== actualYear || viewMonth !== actualMonth) return workingDays;
+            return Math.min(currentDay, workingDays);
+        }
+
         // ── Update Working Days ──
-        function updateWorkingDays() {
+        function updateWorkingDays(e) {
+            if (e) { e.preventDefault();
+                createRipple(e, e.currentTarget); }
             const input = document.getElementById('manualWorkingDays');
             const val = parseInt(input.value);
             if (!val || val <= 0) {
-                alert('Please enter a valid number of working days.');
+                showToast('Please enter a valid number of working days.', 'error');
                 return;
             }
             workingDays = val;
             input.value = '';
             saveData();
             updateUI();
+            showToast(`Working days set to ${val}`, 'success');
         }
 
-        function undoWorkingDays() {
+        function undoWorkingDays(e) {
+            if (e) { e.preventDefault();
+                createRipple(e, e.currentTarget); }
             if (confirm('Are you sure you want to clear working days?')) {
                 workingDays = 0;
                 saveData();
                 updateUI();
+                showToast('Working days reset', 'warning');
             }
         }
 
         // ── Add Cases ──
-        function addCases() {
+        function addCases(e) {
+            if (e) { e.preventDefault();
+                createRipple(e, e.currentTarget); }
             if (workingDays === 0) {
-                alert('Please set your working days first.');
+                showToast('Please set your working days first.', 'error');
                 return;
             }
             const input = document.getElementById('dailyCases');
             const val = parseInt(input.value);
             if (!val || val <= 0) {
-                alert('Please enter a valid number of cases.');
+                showToast('Please enter a valid number of cases.', 'error');
                 return;
             }
 
@@ -1204,21 +1743,63 @@
                 cases: val
             });
 
+            // Success flash on button
+            const btn = document.getElementById('addBtn');
+            btn.classList.add('success-flash');
+            setTimeout(() => btn.classList.remove('success-flash'), 600);
+
             input.value = '';
             saveData();
             updateUI();
+            showToast(`Added ${val} cases! 🎯`, 'success');
+            input.focus();
         }
 
-        function undoLastCase() {
+        function undoLastCase(e) {
+            if (e) { e.preventDefault();
+                createRipple(e, e.currentTarget); }
             if (casesHistory.length === 0) {
-                alert('No entries to undo.');
+                showToast('No entries to undo.', 'warning');
                 return;
             }
             const last = casesHistory[casesHistory.length - 1];
             if (confirm(`Delete the last entry of ${last.cases} cases?`)) {
-                casesHistory.pop();
-                saveData();
-                updateUI();
+                // Animate removal
+                const cards = document.querySelectorAll('.mini-card');
+                if (cards.length > 0) {
+                    const lastCard = cards[0];
+                    lastCard.classList.add('removing');
+                    setTimeout(() => {
+                        casesHistory.pop();
+                        saveData();
+                        updateUI();
+                        showToast(`Removed last entry (${last.cases} cases)`, 'info');
+                        document.getElementById('dailyCases').focus();
+                    }, 300);
+                } else {
+                    casesHistory.pop();
+                    saveData();
+                    updateUI();
+                    showToast(`Removed last entry (${last.cases} cases)`, 'info');
+                    document.getElementById('dailyCases').focus();
+                }
+            }
+        }
+
+        // ── Sparkle effect for progress bar ──
+        function addSparkles() {
+            const container = document.getElementById('sparkleContainer');
+            container.innerHTML = '';
+            for (let i = 0; i < 20; i++) {
+                const sparkle = document.createElement('div');
+                sparkle.className = 'sparkle';
+                sparkle.style.left = Math.random() * 100 + '%';
+                sparkle.style.top = Math.random() * 100 + '%';
+                sparkle.style.animationDelay = (Math.random() * 2) + 's';
+                sparkle.style.animationDuration = (1.5 + Math.random() * 1.5) + 's';
+                sparkle.style.width = (3 + Math.random() * 4) + 'px';
+                sparkle.style.height = sparkle.style.width;
+                container.appendChild(sparkle);
             }
         }
 
@@ -1226,20 +1807,36 @@
         function updateUI() {
             const monthlyTarget = workingDays * 30;
             const totalCompleted = casesHistory.reduce((sum, item) => sum + item.cases, 0);
+            const daysPassed = getDaysPassed();
+            const daysLeft = Math.max(0, workingDays - daysPassed);
 
-            document.getElementById('workingDaysDisplay').innerText = workingDays;
-            document.getElementById('targetDisplay').innerText = monthlyTarget;
-            document.getElementById('totalCompletedDisplay').innerText = totalCompleted;
-
-            const remainingEl = document.getElementById('remainingDisplay');
+            // Animate numbers
+            const workingDaysEl = document.getElementById('workingDaysDisplay');
+            const targetEl = document.getElementById('targetDisplay');
+            const completedEl = document.getElementById('totalCompletedDisplay');
             const financeEl = document.getElementById('financeDisplay');
+
+            // Store previous values for animation
+            const prevWorking = parseInt(workingDaysEl.innerText) || 0;
+            const prevTarget = parseInt(targetEl.innerText) || 0;
+            const prevCompleted = parseInt(completedEl.innerText) || 0;
+
+            // Update with animation
+            animateNumber(workingDaysEl, workingDays, 600);
+            animateNumber(targetEl, monthlyTarget, 600);
+            animateNumber(completedEl, totalCompleted, 600);
+
+            // Status display (update instantly for status)
+            const remainingEl = document.getElementById('remainingDisplay');
             const statusEl = document.getElementById('statusMessage');
             const historyContainer = document.getElementById('miniCardsContainer');
             const historyCount = document.getElementById('historyCount');
+            const progressFill = document.getElementById('progressFill');
+            const progressLabel = document.getElementById('progressLabel');
 
             historyCount.innerText = `${casesHistory.length} entries`;
 
-            // ── History ──
+            // ── History with animations ──
             if (casesHistory.length === 0) {
                 historyContainer.innerHTML = `
                     <div class="empty-history">
@@ -1251,8 +1848,9 @@
                 let html = '';
                 for (let i = casesHistory.length - 1; i >= 0; i--) {
                     const entry = casesHistory[i];
+                    const delay = (casesHistory.length - 1 - i) * 0.06;
                     html += `
-                        <div class="mini-card">
+                        <div class="mini-card" style="animation-delay: ${delay}s">
                             <span class="date-time">
                                 <i class="far fa-clock"></i> ${entry.dateLabel}
                             </span>
@@ -1263,11 +1861,32 @@
                 historyContainer.innerHTML = html;
             }
 
+            // ── Progress Bar ──
+            let percent = 0;
+            if (monthlyTarget > 0) {
+                percent = Math.min((totalCompleted / monthlyTarget) * 100, 200);
+            }
+            const displayPercent = Math.min(percent, 100);
+            progressFill.style.width = `${displayPercent}%`;
+            progressLabel.innerText = `${Math.round(displayPercent)}%`;
+            progressFill.className = 'progress-fill';
+
+            // Sparkle effect when over target
+            if (percent >= 100) {
+                progressFill.classList.add('over');
+                addSparkles();
+            } else if (percent === 100) {
+                progressFill.classList.add('complete');
+            } else {
+                progressFill.classList.remove('over', 'complete');
+                document.getElementById('sparkleContainer').innerHTML = '';
+            }
+
             // ── Finance & Status ──
             if (workingDays === 0) {
                 remainingEl.innerText = '0';
                 remainingEl.className = 'value muted';
-                financeEl.innerText = 'Rs. 0';
+                animateNumber(financeEl, 0, 400);
                 financeEl.className = 'finance-amount neutral';
                 statusEl.innerHTML = `<i class="fas fa-info-circle"></i> Please set your working days to see your status.`;
                 statusEl.className = 'status-message neutral';
@@ -1276,36 +1895,91 @@
 
             const diff = totalCompleted - monthlyTarget;
 
+            // Check for confetti trigger
+            checkConfettiTrigger(totalCompleted, monthlyTarget);
+
+            // Smart required daily average
+            let avgMsg = '';
+            if (daysLeft > 0 && totalCompleted < monthlyTarget) {
+                const required = (monthlyTarget - totalCompleted) / daysLeft;
+                avgMsg = ` | Need ~${Math.ceil(required)} cases/day for remaining ${daysLeft} days`;
+            } else if (daysLeft === 0 && totalCompleted < monthlyTarget) {
+                avgMsg = ' | ⚠️ No days left!';
+            } else if (totalCompleted >= monthlyTarget) {
+                avgMsg = ' | 🎯 Target achieved!';
+            }
+
+            // Animate finance amount
+            let financeValue = 0;
             if (diff > 0) {
+                const incentive = diff * 30;
                 remainingEl.innerText = `+${diff}`;
                 remainingEl.className = 'value green';
-                const incentive = diff * 30;
-                financeEl.innerText = `+ Rs. ${incentive.toLocaleString()}`;
+                financeValue = incentive;
                 financeEl.className = 'finance-amount positive';
-                statusEl.innerHTML = `<i class="fas fa-rocket"></i> Great job! Earned Rs. 30 per extra case. 🚀`;
+                statusEl.innerHTML = `<i class="fas fa-rocket"></i> Great job! Earned Rs. 30/extra case. ${avgMsg}`;
                 statusEl.className = 'status-message success';
             } else if (diff < 0) {
                 const short = Math.abs(diff);
                 remainingEl.innerText = `-${short}`;
                 remainingEl.className = 'value red';
                 const deduction = short * 40;
-                financeEl.innerText = `- Rs. ${deduction.toLocaleString()}`;
+                financeValue = -deduction;
                 financeEl.className = 'finance-amount negative';
-                statusEl.innerHTML = `<i class="fas fa-exclamation-triangle"></i> Short by ${short} cases. Rs. 40 deducted per missed case.`;
+                statusEl.innerHTML =
+                `<i class="fas fa-exclamation-triangle"></i> Short by ${short} cases. Rs. 40/case deducted. ${avgMsg}`;
                 statusEl.className = 'status-message danger';
             } else {
                 remainingEl.innerText = '0';
                 remainingEl.className = 'value muted';
-                financeEl.innerText = 'Rs. 0';
+                financeValue = 0;
                 financeEl.className = 'finance-amount neutral';
-                statusEl.innerHTML = `<i class="fas fa-check-circle"></i> Exactly on target! No deductions, no incentives. 👍`;
+                statusEl.innerHTML = `<i class="fas fa-check-circle"></i> Exactly on target! ${avgMsg}`;
                 statusEl.className = 'status-message neutral';
+            }
+
+            // Animate finance with sign
+            const displaySign = financeValue > 0 ? '+ ' : (financeValue < 0 ? '- ' : '');
+            const absVal = Math.abs(financeValue);
+            const currentFinance = parseInt(financeEl.innerText.replace(/[^0-9]/g, '')) || 0;
+            // Simple animation for finance
+            const financeTarget = absVal;
+            const financeStart = currentFinance;
+            if (financeStart !== financeTarget) {
+                const duration = 600;
+                const startTime = performance.now();
+
+                function updateFinance(time) {
+                    const elapsed = time - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
+                    const ease = 1 - Math.pow(1 - progress, 3);
+                    const current = financeStart + (financeTarget - financeStart) * ease;
+                    const rounded = Math.round(current);
+                    financeEl.innerText = (financeValue < 0 ? '- ' : (financeValue > 0 ? '+ ' : '')) + 'Rs. ' + rounded
+                        .toLocaleString();
+                    if (progress < 1) {
+                        requestAnimationFrame(updateFinance);
+                    } else {
+                        financeEl.innerText = (financeValue < 0 ? '- ' : (financeValue > 0 ? '+ ' : '')) + 'Rs. ' +
+                            financeTarget.toLocaleString();
+                    }
+                }
+                requestAnimationFrame(updateFinance);
+            } else {
+                financeEl.innerText = (financeValue < 0 ? '- ' : (financeValue > 0 ? '+ ' : '')) + 'Rs. ' + financeTarget
+                    .toLocaleString();
             }
         }
 
         // ── Init ──
         populateMonthDropdown();
         loadMonthData();
+
+        // Also re-init tilt when history updates (DOM changes)
+        const observer = new MutationObserver(() => {
+            initTilt();
+        });
+        observer.observe(document.getElementById('miniCardsContainer'), { childList: true, subtree: true });
     </script>
 </body>
 </html>
