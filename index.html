@@ -1294,17 +1294,17 @@
                 <div class="finance-amount" id="financeDisplay">Rs. 0</div>
             </div>
             <div class="status-message" id="statusMessage">
-                <i class="fas fa-info-circle"></i>
-                Set working days to see details.
+                <!-- <i class="fas fa-info-circle"></i> -->
+                <!-- Set working days to see details. -->
             </div>
 
             <!-- Progress Bar -->
             <div class="progress-wrapper">
                 <div class="progress-info">
-                    <span>📊 Target Progress</span>
-                    <span id="progressLabel">0%</span>
+
+                    <span id="progressLabel" hidden>0%</span>
                 </div>
-                <div class="progress-track">
+                <div class="progress-track" hidden>
                     <div class="progress-fill" id="progressFill" style="width: 0%;">
                         <div class="sparkle-container" id="sparkleContainer"></div>
                     </div>
@@ -2078,7 +2078,7 @@
                 remainingEl.className = 'value green';
                 financeValue = incentive;
                 financeEl.className = 'finance-amount positive';
-                statusEl.innerHTML = `<i class="fas fa-rocket"></i> Great job! Earned Rs. 30/extra case. ${avgMsg}`;
+                // statusEl.innerHTML = `<i class="fas fa-rocket"></i> Great job! Earned Rs. 30/extra case. ${avgMsg}`;
                 statusEl.className = 'status-message success';
             } else if (diff < 0) {
                 const short = Math.abs(diff);
@@ -2087,8 +2087,8 @@
                 const deduction = short * 40;
                 financeValue = -deduction;
                 financeEl.className = 'finance-amount negative';
-                statusEl.innerHTML =
-                    `<i class="fas fa-exclamation-triangle"></i> Short by ${short} cases. Rs. 40/case deducted. ${avgMsg}`;
+                // statusEl.innerHTML =
+                //     `<i class="fas fa-exclamation-triangle"></i> Short by ${short} cases. Rs. 40/case deducted. ${avgMsg}`;
                 statusEl.className = 'status-message danger';
             } else {
                 remainingEl.innerText = '0';
