@@ -57,11 +57,11 @@
 
             --transition: 0.35s ease;
 
-            /* Particle colors - light mode */
-            --particle-color: rgba(99, 102, 241, 0.40);
-            --particle-core: rgba(99, 102, 241, 0.60);
-            --line-color: rgba(99, 102, 241, 0.12);
-            --line-hover: rgba(99, 102, 241, 0.28);
+            /* Particle colors - light mode (deep neon blue) */
+            --particle-color: rgba(0, 110, 255, 0.35);
+            --particle-core: rgba(0, 120, 255, 0.75);
+            --line-color: rgba(0, 110, 255, 0.14);
+            --line-hover: rgba(0, 110, 255, 0.14);
         }
 
         /* ── Dark Theme ── */
@@ -88,10 +88,10 @@
             --glass-bg: rgba(30, 41, 59, 0.6);
             --glass-border: rgba(255, 255, 255, 0.05);
 
-            --particle-color: rgba(129, 140, 248, 0.45);
-            --particle-core: rgba(129, 140, 248, 0.70);
-            --line-color: rgba(129, 140, 248, 0.12);
-            --line-hover: rgba(129, 140, 248, 0.30);
+            --particle-color: rgba(0, 170, 255, 0.50);
+            --particle-core: rgba(60, 210, 255, 0.95);
+            --line-color: rgba(0, 160, 255, 0.18);
+            --line-hover: rgba(0, 160, 255, 0.18);
         }
 
         /* ── Body ── */
@@ -1379,41 +1379,45 @@
 
     <!-- ═══ Script ═══ -->
     <script>
-        // ── Responsive Particle Network Background ──
+        // ── Constellation Mesh Background (deep neon blue, 1.0x, high density, no mouse reactivity) ──
         (function initParticles() {
             const canvas = document.getElementById('particle-canvas');
             const ctx = canvas.getContext('2d');
             let width, height;
             let particles = [];
-            let mouse = { x: null, y: null, radius: 120 };
             let animationId;
             let isMobile = window.innerWidth <= 768;
-            let particleCount = isMobile ? 55 : 100;
+
+            // ── Tuning ──
+            const SPEED = 1.0;                 // animation speed multiplier (1.0x)
+            const DESKTOP_COUNT = 190;         // high density
+            const MOBILE_COUNT = 95;           // high density (mobile)
+            const LINK_DIST_DESKTOP = 145;
+            const LINK_DIST_MOBILE = 105;
+
+            let particleCount = isMobile ? MOBILE_COUNT : DESKTOP_COUNT;
 
             function resize() {
                 width = window.innerWidth;
                 height = window.innerHeight;
                 canvas.width = width;
                 canvas.height = height;
-                // Adjust particle count based on screen size
+
                 const newIsMobile = window.innerWidth <= 768;
                 if (newIsMobile !== isMobile) {
                     isMobile = newIsMobile;
-                    particleCount = isMobile ? 55 : 100;
-                    // Rebuild particles with new count
+                    particleCount = isMobile ? MOBILE_COUNT : DESKTOP_COUNT;
                     initParticlesArray();
                 }
-                // Update mouse radius for touch
-                mouse.radius = isMobile ? 80 : 120;
             }
 
+            // Deep neon blue palette
             function getColors() {
                 const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
                 return {
-                    particle: isDark ? 'rgba(129, 140, 248, 0.45)' : 'rgba(99, 102, 241, 0.40)',
-                    core: isDark ? 'rgba(129, 140, 248, 0.70)' : 'rgba(99, 102, 241, 0.60)',
-                    line: isDark ? 'rgba(129, 140, 248, 0.12)' : 'rgba(99, 102, 241, 0.10)',
-                    lineHover: isDark ? 'rgba(129, 140, 248, 0.30)' : 'rgba(99, 102, 241, 0.25)',
+                    particle: isDark ? 'rgba(0, 170, 255, 0.50)' : 'rgba(0, 110, 255, 0.32)',
+                    core: isDark ? 'rgba(70, 215, 255, 0.95)' : 'rgba(0, 125, 255, 0.78)',
+                    line: isDark ? 'rgba(0, 160, 255, 0.18)' : 'rgba(0, 110, 255, 0.13)'
                 };
             }
 
@@ -1421,12 +1425,14 @@
                 constructor() {
                     this.x = Math.random() * width;
                     this.y = Math.random() * height;
-                    const speed = isMobile ? 0.25 : 0.4;
+                    const speed = (isMobile ? 0.22 : 0.34) * SPEED;
                     this.vx = (Math.random() - 0.5) * speed;
                     this.vy = (Math.random() - 0.5) * speed;
-                    this.radius = Math.random() * (isMobile ? 2.2 : 2.5) + (isMobile ? 1.0 : 1.2);
+                    this.radius = Math.random() * (isMobile ? 1.5 : 1.8) + 1.0;
                     this.baseRadius = this.radius;
-                    this.opacity = Math.random() * 0.4 + 0.3;
+                    this.twinklePhase = Math.random() * Math.PI * 2;
+                    this.twinkleSpeed = 0.012 + Math.random() * 0.018;
+                    this.baseOpacity = 0.55 + Math.random() * 0.4;
                 }
 
                 update() {
@@ -1439,32 +1445,14 @@
                     if (this.y < -20) this.y = height + 20;
                     if (this.y > height + 20) this.y = -20;
 
-                    // Mouse / Touch interaction
-                    if (mouse.x !== null && mouse.y !== null) {
-                        const dx = mouse.x - this.x;
-                        const dy = mouse.y - this.y;
-                        const dist = Math.sqrt(dx * dx + dy * dy);
-                        if (dist < mouse.radius) {
-                            const force = (mouse.radius - dist) / mouse.radius * (isMobile ? 0.015 : 0.02);
-                            this.vx += dx / dist * force;
-                            this.vy += dy / dist * force;
-                            const maxRadius = this.baseRadius * (1 + (mouse.radius - dist) / mouse.radius * (isMobile ?
-                                0.3 : 0.5));
-                            this.radius += (maxRadius - this.radius) * 0.05;
-                        } else {
-                            this.radius += (this.baseRadius - this.radius) * 0.02;
-                        }
-                    } else {
-                        this.radius += (this.baseRadius - this.radius) * 0.02;
-                    }
-
-                    // Damping
-                    this.vx *= 0.999;
-                    this.vy *= 0.999;
+                    // Subtle twinkle
+                    this.twinklePhase += this.twinkleSpeed;
                 }
 
                 draw() {
                     const colors = getColors();
+                    const alpha = this.baseOpacity * (0.75 + 0.25 * Math.sin(this.twinklePhase));
+
                     // Glow
                     const glowRadius = this.radius * (isMobile ? 4 : 6);
                     const gradient = ctx.createRadialGradient(
@@ -1475,14 +1463,18 @@
                     gradient.addColorStop(1, 'transparent');
                     ctx.beginPath();
                     ctx.arc(this.x, this.y, glowRadius, 0, Math.PI * 2);
+                    ctx.globalAlpha = alpha;
                     ctx.fillStyle = gradient;
                     ctx.fill();
 
                     // Core
                     ctx.beginPath();
                     ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                    ctx.globalAlpha = alpha;
                     ctx.fillStyle = colors.core;
                     ctx.fill();
+
+                    ctx.globalAlpha = 1;
                 }
             }
 
@@ -1495,8 +1487,8 @@
 
             function drawLines() {
                 const colors = getColors();
-                const maxDist = isMobile ? 100 : 150;
-                const lineWidth = isMobile ? 0.4 : 0.6;
+                const maxDist = isMobile ? LINK_DIST_MOBILE : LINK_DIST_DESKTOP;
+                const lineWidth = isMobile ? 0.45 : 0.65;
 
                 for (let i = 0; i < particles.length; i++) {
                     for (let j = i + 1; j < particles.length; j++) {
@@ -1504,21 +1496,11 @@
                         const dy = particles[i].y - particles[j].y;
                         const dist = Math.sqrt(dx * dx + dy * dy);
                         if (dist < maxDist) {
-                            const opacity = (1 - dist / maxDist) * (isMobile ? 0.35 : 0.5);
-                            let lineColor = colors.line;
-                            // If mouse is near, make lines glow more
-                            if (mouse.x !== null && mouse.y !== null) {
-                                const mx = particles[i].x - mouse.x;
-                                const my = particles[i].y - mouse.y;
-                                const mDist = Math.sqrt(mx * mx + my * my);
-                                if (mDist < mouse.radius + 30) {
-                                    lineColor = colors.lineHover;
-                                }
-                            }
+                            const opacity = (1 - dist / maxDist);
                             ctx.beginPath();
                             ctx.moveTo(particles[i].x, particles[i].y);
                             ctx.lineTo(particles[j].x, particles[j].y);
-                            ctx.strokeStyle = lineColor;
+                            ctx.strokeStyle = colors.line;
                             ctx.lineWidth = lineWidth * opacity;
                             ctx.stroke();
                         }
@@ -1529,50 +1511,17 @@
             function animate() {
                 ctx.clearRect(0, 0, width, height);
 
+                // Draw connections first (mesh behind nodes)
+                drawLines();
+
                 // Update and draw particles
                 for (const p of particles) {
                     p.update();
                     p.draw();
                 }
 
-                // Draw connections
-                drawLines();
-
                 animationId = requestAnimationFrame(animate);
             }
-
-            // ── Mouse tracking ──
-            window.addEventListener('mousemove', function(e) {
-                mouse.x = e.clientX;
-                mouse.y = e.clientY;
-            });
-
-            window.addEventListener('mouseleave', function() {
-                mouse.x = null;
-                mouse.y = null;
-            });
-
-            // ── Touch tracking ──
-            window.addEventListener('touchmove', function(e) {
-                const touch = e.touches[0];
-                if (touch) {
-                    mouse.x = touch.clientX;
-                    mouse.y = touch.clientY;
-                }
-            }, { passive: true });
-
-            window.addEventListener('touchstart', function(e) {
-                const touch = e.touches[0];
-                if (touch) {
-                    mouse.x = touch.clientX;
-                    mouse.y = touch.clientY;
-                }
-            }, { passive: true });
-
-            window.addEventListener('touchend', function() {
-                mouse.x = null;
-                mouse.y = null;
-            });
 
             // ── Resize ──
             window.addEventListener('resize', function() {
@@ -1581,7 +1530,7 @@
 
             // ── Theme change observer ──
             const themeObserver = new MutationObserver(() => {
-                // Colors will be read fresh on each frame
+                // Colors are read fresh on each frame
             });
             themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 
